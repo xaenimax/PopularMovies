@@ -42,5 +42,5 @@ dependencies {
     //picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
     //retrofit
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    //compile 'com.squareup.retrofit2:retrofit:2.3.0'
 }

@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.aenima.android.popularmovies.core.MovieDBAPI;
 import com.aenima.android.popularmovies.movieadapter.MovieAdapter;
 
 import butterknife.BindView;
@@ -16,10 +17,10 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
-    private Toolbar toolbar;
+    Toolbar toolbar;
 
     @BindView(R.id.movies_rv)
-    private RecyclerView movieRecyclerView;
+    RecyclerView movieRecyclerView;
 
     private RecyclerView.Adapter movieAdapter;
     RecyclerView.LayoutManager gridLayoutManager;
@@ -33,8 +34,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         gridLayoutManager = new GridLayoutManager(this, columnNumber);
-        movieAdapter = new MovieAdapter();
-        movieRecyclerView.setAdapter(movieAdapter);
+        MovieDBAPI.makeMovieDBListQuery();
+        //movieAdapter = new MovieAdapter();
+        //movieRecyclerView.setAdapter(movieAdapter);
     }
 
     @Override
