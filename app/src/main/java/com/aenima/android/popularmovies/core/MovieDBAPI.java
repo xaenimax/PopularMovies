@@ -23,11 +23,17 @@ public class MovieDBAPI {
     private static String POSTER_SIZE = "w185";
 
 
+    public static URL getMovieListUrl(){
+        LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
+        queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, "");
+        return NetworkUtils.buildUri(MOVIE_DB_BASE_URL + MOVIE_DB_API_POPULAR_PARTIAL_URL, queryParams);
+    }
+
     public static void makeMovieDBListQuery(){
         String apitest = "";
         LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
-        queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, );
-        URL movieListUrl = NetworkUtils.buildUri(MOVIE_DB_BASE_URL + MOVIE_DB_API_POPULAR_PARTIAL_URL, new LinkedHashMap<String, String>());
+        queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, "");
+        URL movieListUrl = NetworkUtils.buildUri(MOVIE_DB_BASE_URL + MOVIE_DB_API_POPULAR_PARTIAL_URL, queryParams);
         try {
             apitest = NetworkUtils.getHttpResponse(movieListUrl);
         } catch (IOException e) {
