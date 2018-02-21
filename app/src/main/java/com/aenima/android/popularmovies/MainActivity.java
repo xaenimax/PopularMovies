@@ -1,8 +1,8 @@
 package com.aenima.android.popularmovies;
 
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.Loader;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,18 +10,26 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
+import com.aenima.android.popularmovies.core.NetworkUtils;
 
+import java.io.IOException;
 import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
-    private static final int MOVIE_DB_LOADER = 75;
+public class MainActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<String> {
+    private static final int MOVIE_DB_LOADER_ID = 75;
     private static final String LIST_MOVIE_URL_EXTRA = "list_movie_url_extra";
 
+    @BindView(R.id.loading_indicator_pb)
+    ProgressBar mLoadingIndicator;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -33,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     RecyclerView.LayoutManager gridLayoutManager;
     private int columnNumber = 2;
 
+    private String selectedSortBy = MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL; //default value
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +51,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setSupportActionBar(toolbar);
 
         gridLayoutManager = new GridLayoutManager(this, columnNumber);
+        //prepare request for asynctaskloader
         Bundle bundle = new Bundle();
-        URL movieDbListUrl = MovieDBAPI.getMovieListUrl();
+        URL movieDbListUrl = MovieDBAPI.getMovieListUrl(selectedSortBy);
         bundle.putString(LIST_MOVIE_URL_EXTRA, movieDbListUrl.toString());
-        MovieDBAPI.makeMovieDBListQuery();
-        //movieAdapter = new MovieAdapter();
-        //movieRecyclerView.setAdapter(movieAdapter);
+
+        getSupportLoaderManager().initLoader(MOVIE_DB_LOADER_ID, bundle, this);
     }
 
     @Override
@@ -74,23 +83,50 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle args) {
-        return new AsyncTaskLoader<String>() {
+        return new AsyncTaskLoader<String>(this ) {
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
                 if (args == null)
-                    return;;
+                    return;
+
+                mLoadingIndicator.setVisibility(View.VISIBLE);
+                forceLoad();
             }
 
             @Override
             public String loadInBackground() {
-                return null;
+                String movieDBListUrlString = args.getString(LIST_MOVIE_URL_EXTRA);
+                if(movieDBListUrlString == null){
+                    return null;
+                }
+                try{
+                    URL movieListURL = new URL(movieDBListUrlString);
+                    String jsonList = NetworkUtils.getHttpResponse(movieListURL);
+                    return jsonList;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
         };
     }
 
     @Override
-    public void onLoadFinished(Loader<String> loader, String s) {
+    public void onLoadFinished(Loader<String> loader, String data) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if (data == null) {
+            showErrorMessage();
+        } else {
+            showMovieList(data);
+        }
+    }
+
+    private void showErrorMessage() {
+        Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG);
+    }
+
+    private void showMovieList(String data) {
 
     }
 

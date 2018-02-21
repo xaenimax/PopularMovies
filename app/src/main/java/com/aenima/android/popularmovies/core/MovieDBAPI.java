@@ -17,18 +17,19 @@ public class MovieDBAPI {
 
     //https://api.themoviedb.org/3/movie/popular?api_key=
     private static String MOVIE_DB_API_BASE_URL = "https://api.themoviedb.org/3/movie";
-    private static String MOVIE_DB_API_POPULAR_PARTIAL_URL = "/popular?";
-    private static String MOVIE_DB_API_TOP_RATED_PARTIAL_URL = "/top_rated?";
     private static String MOVIE_DB_API_API_KEY_QUERY_PARAM = "api_key";
     private static String POSTER_SIZE = "w185";
 
+    public static String MOVIE_DB_API_POPULAR_PARTIAL_URL = "popular";
+    public static String MOVIE_DB_API_TOP_RATED_PARTIAL_URL = "top_rated";
 
-    public static URL getMovieListUrl(){
+
+    public static URL getMovieListUrl(String sortBy){
         LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
         queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, "");
-        return NetworkUtils.buildUri(MOVIE_DB_BASE_URL + MOVIE_DB_API_POPULAR_PARTIAL_URL, queryParams);
+        return NetworkUtils.buildUri(MOVIE_DB_API_BASE_URL, sortBy, queryParams);
     }
-
+/*
     public static void makeMovieDBListQuery(){
         String apitest = "";
         LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
@@ -41,4 +42,5 @@ public class MovieDBAPI {
         }
         Log.d(MovieDBAPI.class.getName(), apitest);
     }
+    */
 }

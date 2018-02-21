@@ -24,10 +24,10 @@ public class NetworkUtils {
      * @param parameters additional parameters to create, for instance, a query
      * @return a valid Uri, null otherwise
      */
-    public static URL buildUri(String baseUrl, LinkedHashMap<String,String> parameters){
+    public static URL buildUri(String baseUrl, String sortBy, LinkedHashMap<String,String> parameters){
         URL validUrl = null;
         try {
-            Uri.Builder buildUri = Uri.parse(baseUrl).buildUpon();
+            Uri.Builder buildUri = Uri.parse(baseUrl).buildUpon().appendPath(sortBy);
             for (String queryParameter :
                     parameters.keySet()) {
                 buildUri.appendQueryParameter(queryParameter, parameters.get(queryParameter));
