@@ -3,9 +3,17 @@ package com.aenima.android.popularmovies.core;
 import android.net.Uri;
 import android.util.Log;
 
+import com.aenima.android.popularmovies.core.model.Movie;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Created by marina on 20/02/2018.
@@ -29,18 +37,8 @@ public class MovieDBAPI {
         queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, "");
         return NetworkUtils.buildUri(MOVIE_DB_API_BASE_URL, sortBy, queryParams);
     }
-/*
-    public static void makeMovieDBListQuery(){
-        String apitest = "";
-        LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
-        queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, "");
-        URL movieListUrl = NetworkUtils.buildUri(MOVIE_DB_BASE_URL + MOVIE_DB_API_POPULAR_PARTIAL_URL, queryParams);
-        try {
-            apitest = NetworkUtils.getHttpResponse(movieListUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(MovieDBAPI.class.getName(), apitest);
+
+    public static List<Movie> getMovieList(String jsonString){
+        return Movie.getMovieList(jsonString);
     }
-    */
 }

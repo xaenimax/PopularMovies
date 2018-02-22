@@ -1,5 +1,6 @@
 package com.aenima.android.popularmovies;
 
+import android.content.Context;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -16,20 +17,22 @@ import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
 import com.aenima.android.popularmovies.core.NetworkUtils;
+import com.aenima.android.popularmovies.core.model.Movie;
+import com.aenima.android.popularmovies.core.movieadapter.MovieAdapter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<String> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
     private static final int MOVIE_DB_LOADER_ID = 75;
     private static final String LIST_MOVIE_URL_EXTRA = "list_movie_url_extra";
 
     @BindView(R.id.loading_indicator_pb)
-    ProgressBar mLoadingIndicator;
+    public ProgressBar mLoadingIndicator;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements
         bundle.putString(LIST_MOVIE_URL_EXTRA, movieDbListUrl.toString());
 
         getSupportLoaderManager().initLoader(MOVIE_DB_LOADER_ID, bundle, this);
+
     }
 
     @Override
@@ -81,35 +85,53 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    private void showErrorMessage() {
+        Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG).show();
+    }
+
+    private void showMovieList(String data) {
+        List<Movie> movieList = MovieDBAPI.getMovieList(data);
+        movieAdapter = new MovieAdapter(movieList);
+        movieRecyclerView.setAdapter(movieAdapter);
+    }
+
+    public static class MovieListLoader extends AsyncTaskLoader<String>{
+        Bundle mBundle;
+
+        MovieListLoader(Context context, Bundle args) {
+            super(context);
+            mBundle = args;
+        }
+
+        @Override
+        protected void onStartLoading() {
+            super.onStartLoading();
+            if (mBundle == null)
+                return;
+
+            forceLoad();
+        }
+
+        @Override
+        public String loadInBackground() {
+            String movieDBListUrlString = mBundle.getString(LIST_MOVIE_URL_EXTRA);
+            if(movieDBListUrlString == null){
+                return null;
+            }
+            try{
+                URL movieListURL = new URL(movieDBListUrlString);
+                return NetworkUtils.getHttpResponse(movieListURL);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle args) {
-        return new AsyncTaskLoader<String>(this ) {
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                if (args == null)
-                    return;
-
-                mLoadingIndicator.setVisibility(View.VISIBLE);
-                forceLoad();
-            }
-
-            @Override
-            public String loadInBackground() {
-                String movieDBListUrlString = args.getString(LIST_MOVIE_URL_EXTRA);
-                if(movieDBListUrlString == null){
-                    return null;
-                }
-                try{
-                    URL movieListURL = new URL(movieDBListUrlString);
-                    String jsonList = NetworkUtils.getHttpResponse(movieListURL);
-                    return jsonList;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        };
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        return new MovieListLoader(this, args);
     }
 
     @Override
@@ -120,14 +142,6 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             showMovieList(data);
         }
-    }
-
-    private void showErrorMessage() {
-        Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG);
-    }
-
-    private void showMovieList(String data) {
-
     }
 
     @Override
