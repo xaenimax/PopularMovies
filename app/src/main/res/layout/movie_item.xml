@@ -9,6 +9,7 @@
         android:id="@+id/movie_thumb_iv"
         android:scaleType="center"
         android:contentDescription="@string/movie_content_description"
+        android:backgroundTint="@color/colorPrimary"
         />
 
 </FrameLayout>
