@@ -58,7 +58,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Bundle bundle = new Bundle();
         URL movieDbListUrl = MovieDBAPI.getMovieListUrl(selectedSortBy);
         bundle.putString(LIST_MOVIE_URL_EXTRA, movieDbListUrl.toString());
+        // use a linear layout manager
 
+        movieRecyclerView.setLayoutManager(gridLayoutManager);
+        movieRecyclerView.setHasFixedSize(true);
         getSupportLoaderManager().initLoader(MOVIE_DB_LOADER_ID, bundle, this);
 
     }
