@@ -1,9 +1,21 @@
 package com.aenima.android.popularmovies.core.model;
 
+import android.app.LoaderManager;
+import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
+import com.aenima.android.popularmovies.core.NetworkUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +23,7 @@ import java.util.List;
  * Created by marina on 22/02/2018.
  */
 
-public class Movie {
+public class Movie implements Parcelable{
 
     public static final String RESULTS_JSON_HEADER = "results";
     public static final String VOTE_COUNT_JSON_HEADER = "vote_count";
@@ -28,6 +40,8 @@ public class Movie {
     public static final String OVERVIEW_JSON_HEADER = "overview";
     public static final String RELEASE_DATE_JSON_HEADER = "release_date";
 
+    private static String MOVIE_DB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static String POSTER_SIZE = "w185";
 
     String movieTitle, moviePosterPath, movieOriginalLanguage, movieOriginalTitle, movieBackdropPath, movieOverview, movieReleaseDate;
     int movieVoteCount;
@@ -49,6 +63,17 @@ public class Movie {
         this.movieIsAdult = movieIsAdult;
         this.movieVoteAvg = movieVoteAvg;
         this.moviePopularity = moviePopularity;
+    }
+
+    public String getPosterImagePath(){
+
+        try {
+            //Log.d(this.getClass().getName(),URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.moviePosterPath).toString(),"UTF-8"));
+            return URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.moviePosterPath).toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static List<Movie> getMovieList(String jsonString){
@@ -83,4 +108,24 @@ public class Movie {
         return movieList;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(this.movieTitle);
+        parcel.writeString(this.moviePosterPath);
+        parcel.writeString(this.movieOriginalLanguage);
+        parcel.writeString(this.movieBackdropPath);
+        parcel.writeString(this.movieOverview);
+        parcel.writeString(this.movieReleaseDate);
+        parcel.writeDouble(this.movieVoteCount);
+        parcel.writeLong(this.movieId);
+        parcel.writeInt(this.movieHasVideo ?  1 : 0);
+        parcel.writeInt(this.movieIsAdult ? 1 : 0);
+        parcel.writeDouble(this.movieVoteAvg);
+        parcel.writeDouble(this.moviePopularity);
+    }
 }

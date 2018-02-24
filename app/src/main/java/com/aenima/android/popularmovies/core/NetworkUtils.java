@@ -40,6 +40,19 @@ public class NetworkUtils {
         return validUrl;
     }
 
+    public static URL buildPosterUri(String baseUrl, String posterSize, String posterPath){
+        URL validUrl = null;
+        try {
+            Uri.Builder buildUri = Uri.parse(baseUrl).buildUpon().appendPath(posterSize).appendPath(posterPath);
+
+            validUrl = new URL(buildUri.build().toString());
+        }catch (MalformedURLException ex){
+            Log.e(NetworkUtils.class.getName(), ex.getLocalizedMessage());
+        }
+
+        return validUrl;
+    }
+
     public static String getHttpResponse(URL url) throws IOException {
         String httpResponse = null;
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();

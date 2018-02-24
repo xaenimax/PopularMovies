@@ -2,14 +2,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:backgroundTint="@android:color/background_dark">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/movie_thumb_iv"
-        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/movie_content_description"
         android:backgroundTint="@android:color/background_dark"
+        android:padding="1dp"
         />
 
 </FrameLayout>

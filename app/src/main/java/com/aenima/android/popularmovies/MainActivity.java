@@ -1,13 +1,14 @@
 package com.aenima.android.popularmovies;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     RecyclerView.LayoutManager gridLayoutManager;
     private int columnNumber = 2;
 
-    private String selectedSortBy = MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL; //default value
+    private String selectedSortBy;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +55,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        gridLayoutManager = new GridLayoutManager(this, columnNumber);
-        //prepare request for asynctaskloader
+        gridLayoutManager = new StaggeredGridLayoutManager(columnNumber, 1);
+        // use a gridlayout
+        movieRecyclerView.setLayoutManager(gridLayoutManager);
+
+
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        selectedSortBy = sharedPreferences.getString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL);
+        startAsyncLoader();
+    }
+
+    private  void startAsyncLoader(){
         Bundle bundle = new Bundle();
         URL movieDbListUrl = MovieDBAPI.getMovieListUrl(selectedSortBy);
         bundle.putString(LIST_MOVIE_URL_EXTRA, movieDbListUrl.toString());
-        // use a linear layout manager
-
-        movieRecyclerView.setLayoutManager(gridLayoutManager);
-        movieRecyclerView.setHasFixedSize(true);
+        // movieRecyclerView.setHasFixedSize(true);
         getSupportLoaderManager().initLoader(MOVIE_DB_LOADER_ID, bundle, this);
 
     }
@@ -81,7 +89,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_popular) {
+            sharedPreferences.edit().putString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL).apply();
+            if (!selectedSortBy.equals(MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL)){
+                selectedSortBy = MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL;
+                startAsyncLoader();
+            }
+
+            return true;
+        }
+        else if(id == R.id.action_top_rated){
+            sharedPreferences.edit().putString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_TOP_RATED_PARTIAL_URL).apply();
+            if (!selectedSortBy.equals(MovieDBAPI.MOVIE_DB_API_TOP_RATED_PARTIAL_URL)){
+                selectedSortBy = MovieDBAPI.MOVIE_DB_API_TOP_RATED_PARTIAL_URL;
+                startAsyncLoader();
+            }
             return true;
         }
 
@@ -95,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void showMovieList(String data) {
         List<Movie> movieList = MovieDBAPI.getMovieList(data);
         movieAdapter = new MovieAdapter(movieList);
-        movieRecyclerView.setAdapter(movieAdapter);
+        movieRecyclerView.swapAdapter(movieAdapter, true);
     }
 
     public static class MovieListLoader extends AsyncTaskLoader<String>{

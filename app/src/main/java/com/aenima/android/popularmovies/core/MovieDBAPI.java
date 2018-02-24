@@ -3,6 +3,7 @@ package com.aenima.android.popularmovies.core;
 import android.net.Uri;
 import android.util.Log;
 
+import com.aenima.android.popularmovies.BuildConfig;
 import com.aenima.android.popularmovies.core.model.Movie;
 
 import org.json.JSONArray;
@@ -21,12 +22,13 @@ import java.util.List;
 
 public class MovieDBAPI {
 
-    private static String MOVIE_DB_BASE_URL = "http://image.tmdb.org/t/p/";
+
+    private static final String API_KEY = BuildConfig.API_KEY;
 
     //https://api.themoviedb.org/3/movie/popular?api_key=
     private static String MOVIE_DB_API_BASE_URL = "https://api.themoviedb.org/3/movie";
     private static String MOVIE_DB_API_API_KEY_QUERY_PARAM = "api_key";
-    private static String POSTER_SIZE = "w185";
+
 
     public static String MOVIE_DB_API_POPULAR_PARTIAL_URL = "popular";
     public static String MOVIE_DB_API_TOP_RATED_PARTIAL_URL = "top_rated";
@@ -34,7 +36,7 @@ public class MovieDBAPI {
 
     public static URL getMovieListUrl(String sortBy){
         LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
-        queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, "");
+        queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, API_KEY);
         return NetworkUtils.buildUri(MOVIE_DB_API_BASE_URL, sortBy, queryParams);
     }
 
