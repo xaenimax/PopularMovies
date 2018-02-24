@@ -22,10 +22,11 @@ import butterknife.ButterKnife;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     List<Movie> mMovieList;
+    OnMovieClickListener movieClickListener;
 
-
-    public MovieAdapter(List<Movie> movieList) {
+    public MovieAdapter(List<Movie> movieList, OnMovieClickListener listener) {
         mMovieList = movieList;
+        movieClickListener = listener;
     }
 
     @Override
@@ -35,13 +36,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         Context context = holder.movieThumbImageView.getContext();
         Picasso.with(context).load(mMovieList.get(position).getPosterImagePath()).into(holder.movieThumbImageView);
         holder.movieThumbImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                movieClickListener.onMovieClick(mMovieList.get(position));
             }
         });
     }
@@ -61,5 +62,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         }
     }
 
-
+    public interface OnMovieClickListener{
+        void onMovieClick(Movie movie);
+    }
 }

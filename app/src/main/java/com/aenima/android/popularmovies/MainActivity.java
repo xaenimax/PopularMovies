@@ -1,6 +1,7 @@
 package com.aenima.android.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -116,7 +117,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void showMovieList(String data) {
         List<Movie> movieList = MovieDBAPI.getMovieList(data);
-        movieAdapter = new MovieAdapter(movieList);
+        movieAdapter = new MovieAdapter(movieList, new MovieAdapter.OnMovieClickListener() {
+            @Override
+            public void onMovieClick(Movie movie) {
+                Intent detailActivityIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
+                startActivity(detailActivityIntent);
+            }
+        });
         movieRecyclerView.swapAdapter(movieAdapter, true);
     }
 
