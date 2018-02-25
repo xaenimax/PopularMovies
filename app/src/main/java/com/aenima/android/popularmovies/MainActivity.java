@@ -42,12 +42,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.movies_rv)
     RecyclerView movieRecyclerView;
 
-    private RecyclerView.Adapter movieAdapter;
     RecyclerView.LayoutManager gridLayoutManager;
     private int columnNumber = 2;
 
     private String selectedSortBy;
     SharedPreferences sharedPreferences;
+    MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +57,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setSupportActionBar(toolbar);
 
         gridLayoutManager = new StaggeredGridLayoutManager(columnNumber, 1);
-        // use a gridlayout
-        movieRecyclerView.setLayoutManager(gridLayoutManager);
-
 
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         selectedSortBy = sharedPreferences.getString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL);
@@ -117,14 +114,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void showMovieList(String data) {
         List<Movie> movieList = MovieDBAPI.getMovieList(data);
-        movieAdapter = new MovieAdapter(movieList, new MovieAdapter.OnMovieClickListener() {
-            @Override
-            public void onMovieClick(Movie movie) {
-                Intent detailActivityIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
-                startActivity(detailActivityIntent);
-            }
-        });
-        movieRecyclerView.swapAdapter(movieAdapter, true);
+        if(movieAdapter == null) {
+            movieAdapter = new MovieAdapter(movieList, new MovieAdapter.OnMovieClickListener() {
+                @Override
+                public void onMovieClick(Movie movie) {
+                    Intent detailActivityIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
+                    startActivity(detailActivityIntent);
+                }
+            });
+
+            movieRecyclerView.setAdapter(movieAdapter);
+        }
+        else {
+            movieAdapter.updateData(movieList);
+            movieAdapter.notifyDataSetChanged();
+        }
+        //movieRecyclerView.swapAdapter(movieAdapter, true);
+
+
+        // use a gridlayout
+        movieRecyclerView.setLayoutManager(gridLayoutManager);
+
     }
 
     public static class MovieListLoader extends AsyncTaskLoader<String>{

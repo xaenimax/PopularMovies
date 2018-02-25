@@ -52,6 +52,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return mMovieList.size();
     }
 
+    public void updateData(List<Movie> movieList) {
+        this.mMovieList = movieList;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.movie_thumb_iv)
         ImageView movieThumbImageView;

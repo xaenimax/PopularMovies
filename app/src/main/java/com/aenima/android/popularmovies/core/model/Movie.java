@@ -68,7 +68,7 @@ public class Movie implements Parcelable{
     public String getPosterImagePath(){
 
         try {
-            //Log.d(this.getClass().getName(),URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.moviePosterPath).toString(),"UTF-8"));
+            Log.d(this.getClass().getName(),URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.moviePosterPath).toString(),"UTF-8"));
             return URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.moviePosterPath).toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
