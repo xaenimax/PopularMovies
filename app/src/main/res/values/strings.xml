@@ -96,4 +96,8 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="EXTRA_MOVIE_KEY">extra_movie_key</string>
+    <string name="movie_title">Movie title</string>
+    <string name="movie_original_title">Original title</string>
+    <string name="movie_overview">Overview</string>
 </resources>

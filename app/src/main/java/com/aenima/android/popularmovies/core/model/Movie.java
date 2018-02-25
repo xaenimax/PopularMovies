@@ -49,6 +49,19 @@ public class Movie implements Parcelable{
     boolean movieHasVideo, movieIsAdult;
     double movieVoteAvg, moviePopularity;
 
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel parcel) {
+            return new Movie(parcel);
+        }
+
+        @Override
+        public Movie[] newArray(int i) {
+            return new Movie[i];
+        }
+    };
+
     public Movie(String movieTitle, int movieVoteCount, long movieId, boolean movieHasVideo, double movieVoteAvg, double moviePopularity, String moviePosterPath, String movieOriginalLanguage, String movieOriginalTitle, String movieBackdropPath, boolean movieIsAdult, String movieOverview, String movieReleaseDate) {
         this.movieTitle = movieTitle;
         this.moviePosterPath = moviePosterPath;
@@ -63,6 +76,22 @@ public class Movie implements Parcelable{
         this.movieIsAdult = movieIsAdult;
         this.movieVoteAvg = movieVoteAvg;
         this.moviePopularity = moviePopularity;
+    }
+
+
+    public Movie(Parcel parcel) {
+        this.movieTitle = parcel.readString();
+        this.moviePosterPath = parcel.readString();
+        this.movieOriginalLanguage = parcel.readString();
+        this.movieBackdropPath = parcel.readString();
+        this.movieOverview = parcel.readString();
+        this.movieReleaseDate = parcel.readString();
+        this.movieVoteCount = parcel.readInt();
+        this.movieId = parcel.readLong();
+        this.movieHasVideo = parcel.readInt() == 1 ? true : false;
+        this.movieIsAdult = parcel.readInt() == 1 ? true : false;
+        this.movieVoteAvg = parcel.readDouble();
+        this.moviePopularity = parcel.readDouble();
     }
 
     public String getPosterImagePath(){
@@ -108,6 +137,7 @@ public class Movie implements Parcelable{
         return movieList;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -121,11 +151,24 @@ public class Movie implements Parcelable{
         parcel.writeString(this.movieBackdropPath);
         parcel.writeString(this.movieOverview);
         parcel.writeString(this.movieReleaseDate);
-        parcel.writeDouble(this.movieVoteCount);
+        parcel.writeInt(this.movieVoteCount);
         parcel.writeLong(this.movieId);
         parcel.writeInt(this.movieHasVideo ?  1 : 0);
         parcel.writeInt(this.movieIsAdult ? 1 : 0);
         parcel.writeDouble(this.movieVoteAvg);
         parcel.writeDouble(this.moviePopularity);
+    }
+
+
+    public String getTitle() {
+        return movieTitle;
+    }
+
+    public String getOriginalTitle() {
+        return movieOriginalTitle;
+    }
+
+    public String getOverview() {
+        return movieOverview;
     }
 }

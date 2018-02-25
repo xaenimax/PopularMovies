@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 @Override
                 public void onMovieClick(Movie movie) {
                     Intent detailActivityIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
+                    detailActivityIntent.putExtra(getString(R.string.EXTRA_MOVIE_KEY), movie);
                     startActivity(detailActivityIntent);
                 }
             });
