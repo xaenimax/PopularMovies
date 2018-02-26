@@ -1,7 +1,6 @@
 package com.aenima.android.popularmovies.core.model;
 
-import android.app.LoaderManager;
-import android.net.Uri;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -13,11 +12,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by marina on 22/02/2018.
@@ -25,29 +28,29 @@ import java.util.List;
 
 public class Movie implements Parcelable{
 
-    public static final String RESULTS_JSON_HEADER = "results";
-    public static final String VOTE_COUNT_JSON_HEADER = "vote_count";
-    public static final String ID_JSON_HEADER = "id";
-    public static final String VIDEO_JSON_HEADER = "video";
-    public static final String VOTE_AVERAGE_JSON_HEADER = "vote_average";
-    public static final String TITLE_JSON_HEADER = "title";
-    public static final String POPULARITY_JSON_HEADER = "popularity";
-    public static final String POSTER_PATH_JSON_HEADER = "poster_path";
-    public static final String ORIGINAL_LANGUAGE_JSON_HEADER = "original_language";
-    public static final String ORIGINAL_TITLE_JSON_HEADER = "original_title";
-    public static final String BACKDROP_PATH_JSON_HEADER = "backdrop_path";
-    public static final String ADULT_JSON_HEADER = "adult";
-    public static final String OVERVIEW_JSON_HEADER = "overview";
-    public static final String RELEASE_DATE_JSON_HEADER = "release_date";
+    private static final String RESULTS_JSON_HEADER = "results";
+    private static final String VOTE_COUNT_JSON_HEADER = "vote_count";
+    private static final String ID_JSON_HEADER = "id";
+    private static final String VIDEO_JSON_HEADER = "video";
+    private static final String VOTE_AVERAGE_JSON_HEADER = "vote_average";
+    private static final String TITLE_JSON_HEADER = "title";
+    private static final String POPULARITY_JSON_HEADER = "popularity";
+    private static final String POSTER_PATH_JSON_HEADER = "poster_path";
+    private static final String ORIGINAL_LANGUAGE_JSON_HEADER = "original_language";
+    private static final String ORIGINAL_TITLE_JSON_HEADER = "original_title";
+    private static final String BACKDROP_PATH_JSON_HEADER = "backdrop_path";
+    private static final String ADULT_JSON_HEADER = "adult";
+    private static final String OVERVIEW_JSON_HEADER = "overview";
+    private static final String RELEASE_DATE_JSON_HEADER = "release_date";
 
-    private static String MOVIE_DB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static String POSTER_SIZE = "w185";
+    private static final String MOVIE_DB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String POSTER_SIZE = "w185";
 
-    String movieTitle, moviePosterPath, movieOriginalLanguage, movieOriginalTitle, movieBackdropPath, movieOverview, movieReleaseDate;
-    int movieVoteCount;
-    long movieId;
-    boolean movieHasVideo, movieIsAdult;
-    double movieVoteAvg, moviePopularity;
+    private String movieTitle, moviePosterPath, movieOriginalLanguage, movieOriginalTitle, movieBackdropPath, movieOverview, movieReleaseDate;
+    private int movieVoteCount;
+    private long movieId;
+    private boolean movieHasVideo, movieIsAdult;
+    private double movieVoteAvg, moviePopularity;
 
 
     public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -62,7 +65,7 @@ public class Movie implements Parcelable{
         }
     };
 
-    public Movie(String movieTitle, int movieVoteCount, long movieId, boolean movieHasVideo, double movieVoteAvg, double moviePopularity, String moviePosterPath, String movieOriginalLanguage, String movieOriginalTitle, String movieBackdropPath, boolean movieIsAdult, String movieOverview, String movieReleaseDate) {
+    private Movie(String movieTitle, int movieVoteCount, long movieId, boolean movieHasVideo, double movieVoteAvg, double moviePopularity, String moviePosterPath, String movieOriginalLanguage, String movieOriginalTitle, String movieBackdropPath, boolean movieIsAdult, String movieOverview, String movieReleaseDate) {
         this.movieTitle = movieTitle;
         this.moviePosterPath = moviePosterPath;
         this.movieOriginalLanguage = movieOriginalLanguage;
@@ -79,7 +82,7 @@ public class Movie implements Parcelable{
     }
 
 
-    public Movie(Parcel parcel) {
+    private Movie(Parcel parcel) {
         this.movieTitle = parcel.readString();
         this.moviePosterPath = parcel.readString();
         this.movieOriginalLanguage = parcel.readString();
@@ -88,8 +91,8 @@ public class Movie implements Parcelable{
         this.movieReleaseDate = parcel.readString();
         this.movieVoteCount = parcel.readInt();
         this.movieId = parcel.readLong();
-        this.movieHasVideo = parcel.readInt() == 1 ? true : false;
-        this.movieIsAdult = parcel.readInt() == 1 ? true : false;
+        this.movieHasVideo = parcel.readInt() == 1;
+        this.movieIsAdult = parcel.readInt() == 1;
         this.movieVoteAvg = parcel.readDouble();
         this.moviePopularity = parcel.readDouble();
     }
@@ -99,6 +102,17 @@ public class Movie implements Parcelable{
         try {
             Log.d(this.getClass().getName(),URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.moviePosterPath).toString(),"UTF-8"));
             return URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.moviePosterPath).toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getBackDropImagePath(){
+
+        try {
+            //Log.d(this.getClass().getName(),URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.movieBackdropPath).toString(),"UTF-8"));
+            return URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.movieBackdropPath).toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return null;
@@ -170,5 +184,23 @@ public class Movie implements Parcelable{
 
     public String getOverview() {
         return movieOverview;
+    }
+
+    public String getReleaseDate() {
+
+        SimpleDateFormat curFormater = new SimpleDateFormat("yyyy-MM-dd");
+        curFormater.setTimeZone(TimeZone.getDefault());
+        Date dateObj = null;
+        try {
+            dateObj = curFormater.parse(this.movieReleaseDate);
+            int datestyle = DateFormat.FULL; // try also MEDIUM, and FULL
+            DateFormat df = DateFormat.getDateInstance(datestyle, Locale.getDefault());
+
+            return  df.format(dateObj); // ex. Slovene: 23. okt. 2014 20:34:45
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+
     }
 }

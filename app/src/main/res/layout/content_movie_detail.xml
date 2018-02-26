@@ -11,26 +11,46 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        >
         <TextView
-            android:id="@+id/movie_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:contentDescription="@string/movie_title"/>
+            android:text="@string/original_title_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:contentDescription="@string/original_movie_title_description"/>
         <TextView
             android:id="@+id/movie_original_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
             android:contentDescription="@string/movie_original_title"/>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="@string/overview_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:contentDescription="@string/overview_description"/>
         <TextView
             android:id="@+id/movie_overview_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
             android:contentDescription="@string/movie_overview"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="@string/release_date_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:contentDescription="@string/release_date_description"/>
+        <TextView
+            android:id="@+id/release_date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
