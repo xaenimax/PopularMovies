@@ -14,7 +14,6 @@
     <string name="movie_detail_image">Movie detail image</string>
     <string name="original_movie_title_description">Original movie title</string>
     <string name="original_title_label">Original Title:</string>
-    <string name="overview_label">Overview:</string>
     <string name="overview_description">Overview</string>
     <string name="release_date_label">Release Date:</string>
     <string name="release_date_description">Release date</string>

@@ -193,7 +193,7 @@ public class Movie implements Parcelable{
         Date dateObj = null;
         try {
             dateObj = curFormater.parse(this.movieReleaseDate);
-            int datestyle = DateFormat.FULL; // try also MEDIUM, and FULL
+            int datestyle = DateFormat.MEDIUM; // try also MEDIUM, and FULL
             DateFormat df = DateFormat.getDateInstance(datestyle, Locale.getDefault());
 
             return  df.format(dateObj); // ex. Slovene: 23. okt. 2014 20:34:45
@@ -202,5 +202,9 @@ public class Movie implements Parcelable{
         }
         return "";
 
+    }
+
+    public double getVoteAvg() {
+        return this.movieVoteAvg;
     }
 }

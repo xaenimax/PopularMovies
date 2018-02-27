@@ -23,15 +23,24 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.release_date_tv)
     TextView releaseDateTextView;
+
     @BindView(R.id.movie_original_title_tv)
     TextView originalTitleTextView;
+
     @BindView(R.id.movie_overview_tv)
     TextView overviewTextView;
+
     @BindView(R.id.movie_detail_sv)
     NestedScrollView movieScrollView;
+
     @BindView(R.id.backdrop_iv)
     ImageView movieDetailImageView;
 
+    @BindView(R.id.main_poster_iv)
+    ImageView moviePosterImageView;
+
+    @BindView(R.id.vote_avg_tv)
+    TextView voteAvgTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +50,20 @@ public class MovieDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
         Movie selectedMovie = getIntent().getParcelableExtra(getString(R.string.EXTRA_MOVIE_KEY));
-        releaseDateTextView.setText(selectedMovie.getReleaseDate());
+        releaseDateTextView.setText(getString(R.string.release_date_label) + " " + selectedMovie.getReleaseDate());
         setTitle(String.valueOf(selectedMovie.getTitle()));
-        toolbar.setTitle(selectedMovie.getTitle());
-        originalTitleTextView.setText(selectedMovie.getOriginalTitle());
+
+        if(selectedMovie.getOriginalTitle() != null) {
+            originalTitleTextView.setText(getString(R.string.original_title_label) + " " + selectedMovie.getOriginalTitle());
+            originalTitleTextView.setVisibility(View.VISIBLE);
+
+        }else {
+            originalTitleTextView.setVisibility(View.GONE);
+        }
         overviewTextView.setText(selectedMovie.getOverview());
+        voteAvgTextView.setText(String.valueOf(selectedMovie.getVoteAvg())+ "/10");
         Picasso.with(this).load(selectedMovie.getBackDropImagePath()).into(movieDetailImageView);
+        Picasso.with(this).load(selectedMovie.getPosterImagePath()).into(moviePosterImageView);
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
