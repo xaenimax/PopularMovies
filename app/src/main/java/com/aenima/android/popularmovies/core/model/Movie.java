@@ -45,6 +45,7 @@ public class Movie implements Parcelable{
 
     private static final String MOVIE_DB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_SIZE = "w185";
+    private static final String BACKDROP_SIZE = "w342";
 
     private String movieTitle, moviePosterPath, movieOriginalLanguage, movieOriginalTitle, movieBackdropPath, movieOverview, movieReleaseDate;
     private int movieVoteCount;
@@ -112,7 +113,7 @@ public class Movie implements Parcelable{
 
         try {
             //Log.d(this.getClass().getName(),URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.movieBackdropPath).toString(),"UTF-8"));
-            return URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, POSTER_SIZE, this.movieBackdropPath).toString(), "UTF-8");
+            return URLDecoder.decode(NetworkUtils.buildPosterUri(MOVIE_DB_POSTER_BASE_URL, BACKDROP_SIZE, this.movieBackdropPath).toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return null;

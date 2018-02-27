@@ -1,5 +1,6 @@
 package com.aenima.android.popularmovies;
 
+import android.media.Rating;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -42,6 +44,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.vote_avg_tv)
     TextView voteAvgTextView;
 
+    @BindView(R.id.movie_rating_rb)
+    RatingBar movieRatingBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
+
         Movie selectedMovie = getIntent().getParcelableExtra(getString(R.string.EXTRA_MOVIE_KEY));
         releaseDateTextView.setText(getString(R.string.release_date_label) + " " + selectedMovie.getReleaseDate());
         setTitle(String.valueOf(selectedMovie.getTitle()));
@@ -61,6 +67,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             originalTitleTextView.setVisibility(View.GONE);
         }
         overviewTextView.setText(selectedMovie.getOverview());
+        movieRatingBar.setProgress();
         voteAvgTextView.setText(String.valueOf(selectedMovie.getVoteAvg())+ "/10");
         Picasso.with(this).load(selectedMovie.getBackDropImagePath()).into(movieDetailImageView);
         Picasso.with(this).load(selectedMovie.getPosterImagePath()).into(moviePosterImageView);
