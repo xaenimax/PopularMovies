@@ -132,7 +132,7 @@ public class Movie implements Parcelable{
                     int movieVoteCount = movieJsonObject.optInt(Movie.VOTE_COUNT_JSON_HEADER);
                     long movieId = movieJsonObject.optLong(Movie.ID_JSON_HEADER);
                     boolean movieHasVideo = movieJsonObject.optBoolean(Movie.VIDEO_JSON_HEADER);
-                    float movieVoteAvg = (float)movieJsonObject.optDouble(Movie.VOTE_AVERAGE_JSON_HEADER).;
+                    float movieVoteAvg = (float)movieJsonObject.optDouble(Movie.VOTE_AVERAGE_JSON_HEADER);
                     float moviePopularity = (float) movieJsonObject.optDouble(Movie.POPULARITY_JSON_HEADER);
                     String moviePosterPath = movieJsonObject.optString(Movie.POSTER_PATH_JSON_HEADER);
                     String movieOriginalLanguage = movieJsonObject.optString(Movie.ORIGINAL_LANGUAGE_JSON_HEADER);
