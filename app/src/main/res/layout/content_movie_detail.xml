@@ -34,18 +34,13 @@
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:isIndicator="true"
                 android:id="@+id/movie_rating_rb"
-                android:stepSize="0.1"
-                android:progress="4"
                 android:max="10"
+                android:numStars="10"
                 android:theme="@style/RatingBarPerson"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"  />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+
             <TextView
                 android:id="@+id/vote_avg_tv"
                 android:layout_width="wrap_content"

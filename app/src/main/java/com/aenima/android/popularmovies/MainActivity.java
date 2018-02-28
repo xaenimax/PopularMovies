@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         gridLayoutManager = new StaggeredGridLayoutManager(columnNumber, 1);
 
+
+
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         selectedSortBy = sharedPreferences.getString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL);
         startAsyncLoader();
@@ -125,16 +127,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             });
 
             movieRecyclerView.setAdapter(movieAdapter);
+            // use a gridlayout
+            movieRecyclerView.setLayoutManager(gridLayoutManager);
+
         }
         else {
             movieAdapter.updateData(movieList);
             movieAdapter.notifyDataSetChanged();
         }
+
         //movieRecyclerView.swapAdapter(movieAdapter, true);
 
 
-        // use a gridlayout
-        movieRecyclerView.setLayoutManager(gridLayoutManager);
 
     }
 
