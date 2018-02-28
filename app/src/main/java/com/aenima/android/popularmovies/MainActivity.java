@@ -70,7 +70,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         URL movieDbListUrl = MovieDBAPI.getMovieListUrl(selectedSortBy);
         bundle.putString(LIST_MOVIE_URL_EXTRA, movieDbListUrl.toString());
         // movieRecyclerView.setHasFixedSize(true);
-        getSupportLoaderManager().initLoader(MOVIE_DB_LOADER_ID, bundle, this);
+        if (getSupportLoaderManager().getLoader(MOVIE_DB_LOADER_ID) == null) {
+            getSupportLoaderManager().initLoader(MOVIE_DB_LOADER_ID, bundle, this);
+        } else {
+            getSupportLoaderManager().restartLoader(MOVIE_DB_LOADER_ID, bundle, this);
+
+        }
+
 
     }
 
@@ -176,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<String> onCreateLoader(int id, final Bundle args) {
+    public Loader<String> onCreateLoader(int id, Bundle args) {
         mLoadingIndicator.setVisibility(View.VISIBLE);
         return new MovieListLoader(this, args);
     }
