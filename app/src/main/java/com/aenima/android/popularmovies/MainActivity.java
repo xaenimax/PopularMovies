@@ -3,6 +3,7 @@ package com.aenima.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +34,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
     private static final int MOVIE_DB_LOADER_ID = 75;
     private static final String LIST_MOVIE_URL_EXTRA = "list_movie_url_extra";
+    private static final String SCROLL_POSITION_EXTRA = "position";
+
 
     @BindView(R.id.loading_indicator_pb)
     public ProgressBar mLoadingIndicator;
@@ -57,10 +61,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setSupportActionBar(toolbar);
 
         gridLayoutManager = new StaggeredGridLayoutManager(columnNumber, 1);
-
-
-
+        //gridLayoutManager.onRestoreInstanceState(state);
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        if(savedInstanceState != null) {
+            int position = savedInstanceState.getInt(SCROLL_POSITION_EXTRA);
+            movieRecyclerView.scrollToPosition( 15);
+        }
         selectedSortBy = sharedPreferences.getString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL);
         startAsyncLoader();
     }
@@ -76,7 +82,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getSupportLoaderManager().restartLoader(MOVIE_DB_LOADER_ID, bundle, this);
 
         }
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+       // int position = savedInstanceState.getInt(SCROLL_POSITION_EXTRA);
+        //movieRecyclerView.scrollTo(0, position);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.d(this.getClass().getName(), "Scroll position " + movieRecyclerView.computeVerticalScrollRange());
+        savedInstanceState.putInt(SCROLL_POSITION_EXTRA, movieRecyclerView.computeVerticalScrollOffset());
 
     }
 
@@ -131,21 +150,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     startActivity(detailActivityIntent);
                 }
             });
-
             movieRecyclerView.setAdapter(movieAdapter);
             // use a gridlayout
             movieRecyclerView.setLayoutManager(gridLayoutManager);
-
         }
         else {
             movieAdapter.updateData(movieList);
             movieAdapter.notifyDataSetChanged();
         }
-
         //movieRecyclerView.swapAdapter(movieAdapter, true);
-
-
-
     }
 
     public static class MovieListLoader extends AsyncTaskLoader<String>{

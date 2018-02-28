@@ -17,4 +17,5 @@
     <string name="overview_description">Overview</string>
     <string name="release_date_label">Release Date:</string>
     <string name="release_date_description">Release date</string>
+    <string name="POSITION_BUNDLE_KEY">position</string>
 </resources>
