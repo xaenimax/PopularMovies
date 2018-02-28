@@ -67,7 +67,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             originalTitleTextView.setVisibility(View.GONE);
         }
         overviewTextView.setText(selectedMovie.getOverview());
-        movieRatingBar.setProgress();
+        movieRatingBar.setRating(selectedMovie.getVoteAvg());
         voteAvgTextView.setText(String.valueOf(selectedMovie.getVoteAvg())+ "/10");
         Picasso.with(this).load(selectedMovie.getBackDropImagePath()).into(movieDetailImageView);
         Picasso.with(this).load(selectedMovie.getPosterImagePath()).into(moviePosterImageView);

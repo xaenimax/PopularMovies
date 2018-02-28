@@ -51,7 +51,7 @@ public class Movie implements Parcelable{
     private int movieVoteCount;
     private long movieId;
     private boolean movieHasVideo, movieIsAdult;
-    private double movieVoteAvg, moviePopularity;
+    private float movieVoteAvg, moviePopularity;
 
 
     public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -66,7 +66,7 @@ public class Movie implements Parcelable{
         }
     };
 
-    private Movie(String movieTitle, int movieVoteCount, long movieId, boolean movieHasVideo, double movieVoteAvg, double moviePopularity, String moviePosterPath, String movieOriginalLanguage, String movieOriginalTitle, String movieBackdropPath, boolean movieIsAdult, String movieOverview, String movieReleaseDate) {
+    private Movie(String movieTitle, int movieVoteCount, long movieId, boolean movieHasVideo, float movieVoteAvg, float moviePopularity, String moviePosterPath, String movieOriginalLanguage, String movieOriginalTitle, String movieBackdropPath, boolean movieIsAdult, String movieOverview, String movieReleaseDate) {
         this.movieTitle = movieTitle;
         this.moviePosterPath = moviePosterPath;
         this.movieOriginalLanguage = movieOriginalLanguage;
@@ -94,8 +94,8 @@ public class Movie implements Parcelable{
         this.movieId = parcel.readLong();
         this.movieHasVideo = parcel.readInt() == 1;
         this.movieIsAdult = parcel.readInt() == 1;
-        this.movieVoteAvg = parcel.readDouble();
-        this.moviePopularity = parcel.readDouble();
+        this.movieVoteAvg = parcel.readFloat();
+        this.moviePopularity = parcel.readFloat();
     }
 
     public String getPosterImagePath(){
@@ -132,8 +132,8 @@ public class Movie implements Parcelable{
                     int movieVoteCount = movieJsonObject.optInt(Movie.VOTE_COUNT_JSON_HEADER);
                     long movieId = movieJsonObject.optLong(Movie.ID_JSON_HEADER);
                     boolean movieHasVideo = movieJsonObject.optBoolean(Movie.VIDEO_JSON_HEADER);
-                    double movieVoteAvg = movieJsonObject.optDouble(Movie.VOTE_AVERAGE_JSON_HEADER);
-                    double moviePopularity = movieJsonObject.optDouble(Movie.POPULARITY_JSON_HEADER);
+                    float movieVoteAvg = (float)movieJsonObject.optDouble(Movie.VOTE_AVERAGE_JSON_HEADER).;
+                    float moviePopularity = (float) movieJsonObject.optDouble(Movie.POPULARITY_JSON_HEADER);
                     String moviePosterPath = movieJsonObject.optString(Movie.POSTER_PATH_JSON_HEADER);
                     String movieOriginalLanguage = movieJsonObject.optString(Movie.ORIGINAL_LANGUAGE_JSON_HEADER);
                     String movieOriginalTitle = movieJsonObject.optString(Movie.ORIGINAL_TITLE_JSON_HEADER);
@@ -170,8 +170,8 @@ public class Movie implements Parcelable{
         parcel.writeLong(this.movieId);
         parcel.writeInt(this.movieHasVideo ?  1 : 0);
         parcel.writeInt(this.movieIsAdult ? 1 : 0);
-        parcel.writeDouble(this.movieVoteAvg);
-        parcel.writeDouble(this.moviePopularity);
+        parcel.writeFloat(this.movieVoteAvg);
+        parcel.writeFloat(this.moviePopularity);
     }
 
 
@@ -205,7 +205,7 @@ public class Movie implements Parcelable{
 
     }
 
-    public double getVoteAvg() {
+    public float getVoteAvg() {
         return this.movieVoteAvg;
     }
 }
