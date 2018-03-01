@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
-import com.aenima.android.popularmovies.core.NetworkUtils;
+import com.aenima.android.popularmovies.core.network.NetworkUtils;
 import com.aenima.android.popularmovies.core.model.Movie;
 import com.aenima.android.popularmovies.core.movieadapter.MovieAdapter;
 

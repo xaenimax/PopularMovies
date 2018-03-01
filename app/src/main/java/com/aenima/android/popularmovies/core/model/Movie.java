@@ -5,7 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.aenima.android.popularmovies.core.NetworkUtils;
+import com.aenima.android.popularmovies.core.network.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

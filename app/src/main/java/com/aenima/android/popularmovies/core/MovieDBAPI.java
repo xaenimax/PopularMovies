@@ -1,18 +1,10 @@
 package com.aenima.android.popularmovies.core;
 
-import android.net.Uri;
-import android.util.Log;
-
 import com.aenima.android.popularmovies.BuildConfig;
 import com.aenima.android.popularmovies.core.model.Movie;
+import com.aenima.android.popularmovies.core.network.NetworkUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 

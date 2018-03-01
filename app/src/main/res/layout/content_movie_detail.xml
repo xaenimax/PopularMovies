@@ -20,7 +20,9 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_anchor="@id/app_bar"
+            app:layout_anchorGravity="bottom|end"/>
         <LinearLayout
             android:id="@+id/vote_avg_ll"
             android:layout_margin="50dp"
