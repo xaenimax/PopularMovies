@@ -1,22 +1,18 @@
 package com.aenima.android.popularmovies;
 
-import android.media.Rating;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.aenima.android.popularmovies.core.model.Movie;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +43,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_rating_rb)
     RatingBar movieRatingBar;
 
+    private Parcelable scrollViewState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,9 +66,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         overviewTextView.setText(selectedMovie.getOverview());
         movieRatingBar.setRating(selectedMovie.getVoteAvg());
-        voteAvgTextView.setText(String.valueOf(selectedMovie.getVoteAvg())+ "/10");
+        voteAvgTextView.setText(String.valueOf(selectedMovie.getVoteAvg())+ getString(R.string.rating_ten_string));
         Picasso.with(this).load(selectedMovie.getBackDropImagePath()).into(movieDetailImageView);
         Picasso.with(this).load(selectedMovie.getPosterImagePath()).into(moviePosterImageView);
+
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,5 +80,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
         */
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 }

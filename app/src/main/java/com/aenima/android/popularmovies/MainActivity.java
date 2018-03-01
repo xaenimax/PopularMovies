@@ -34,8 +34,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
     private static final int MOVIE_DB_LOADER_ID = 75;
     private static final String LIST_MOVIE_URL_EXTRA = "list_movie_url_extra";
-    private static final String SCROLL_POSITION_EXTRA = "position";
-
+    private static final String RECYCLER_VIEW_STATE = "recycler_view_state";
+    private Parcelable mRecyclerViewState = null;
 
     @BindView(R.id.loading_indicator_pb)
     public ProgressBar mLoadingIndicator;
@@ -63,12 +63,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         gridLayoutManager = new StaggeredGridLayoutManager(columnNumber, 1);
         //gridLayoutManager.onRestoreInstanceState(state);
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        if(savedInstanceState != null) {
-            int position = savedInstanceState.getInt(SCROLL_POSITION_EXTRA);
-            movieRecyclerView.scrollToPosition( 15);
-        }
         selectedSortBy = sharedPreferences.getString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL);
         startAsyncLoader();
+
+
     }
 
     private  void startAsyncLoader(){
@@ -87,15 +85,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-       // int position = savedInstanceState.getInt(SCROLL_POSITION_EXTRA);
-        //movieRecyclerView.scrollTo(0, position);
+        mRecyclerViewState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE);
+
     }
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        Log.d(this.getClass().getName(), "Scroll position " + movieRecyclerView.computeVerticalScrollRange());
-        savedInstanceState.putInt(SCROLL_POSITION_EXTRA, movieRecyclerView.computeVerticalScrollOffset());
+        mRecyclerViewState = gridLayoutManager.onSaveInstanceState();
+        savedInstanceState.putParcelable(RECYCLER_VIEW_STATE, mRecyclerViewState);
 
     }
 
@@ -158,7 +156,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             movieAdapter.updateData(movieList);
             movieAdapter.notifyDataSetChanged();
         }
-        //movieRecyclerView.swapAdapter(movieAdapter, true);
+        if(mRecyclerViewState != null) {
+            gridLayoutManager.onRestoreInstanceState(mRecyclerViewState);
+        }
     }
 
     public static class MovieListLoader extends AsyncTaskLoader<String>{
