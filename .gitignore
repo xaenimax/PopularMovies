@@ -46,3 +46,4 @@ obj/
 .externalNativeBuild
 
 /gradle.properties
+gradle.properties
