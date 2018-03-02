@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.aenima.android.popularmovies.core.network.NetworkUtils;
+import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,11 +48,32 @@ public class Movie implements Parcelable{
     private static final String POSTER_SIZE = "w185";
     private static final String BACKDROP_SIZE = "w342";
 
-    private String movieTitle, moviePosterPath, movieOriginalLanguage, movieOriginalTitle, movieBackdropPath, movieOverview, movieReleaseDate;
+    @SerializedName(TITLE_JSON_HEADER)
+    private String movieTitle;
+    @SerializedName(POSTER_PATH_JSON_HEADER)
+    private String moviePosterPath;
+    @SerializedName(ORIGINAL_LANGUAGE_JSON_HEADER)
+    private String movieOriginalLanguage;
+    @SerializedName(ORIGINAL_TITLE_JSON_HEADER)
+    private String movieOriginalTitle;
+    @SerializedName(BACKDROP_PATH_JSON_HEADER)
+    private String movieBackdropPath;
+    @SerializedName(OVERVIEW_JSON_HEADER)
+    private String movieOverview;
+    @SerializedName(RELEASE_DATE_JSON_HEADER)
+    private String movieReleaseDate;
+    @SerializedName(VOTE_COUNT_JSON_HEADER)
     private int movieVoteCount;
+    @SerializedName(ID_JSON_HEADER)
     private long movieId;
-    private boolean movieHasVideo, movieIsAdult;
-    private float movieVoteAvg, moviePopularity;
+    @SerializedName(VIDEO_JSON_HEADER)
+    private boolean movieHasVideo;
+    @SerializedName(ADULT_JSON_HEADER)
+    private boolean movieIsAdult;
+    @SerializedName(TITLE_JSON_HEADER)
+    private float movieVoteAvg;
+    @SerializedName(POPULARITY_JSON_HEADER)
+    private float moviePopularity;
 
 
     public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {

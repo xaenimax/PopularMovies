@@ -32,6 +32,12 @@ public class MovieDBAPI {
         return NetworkUtils.buildUri(MOVIE_DB_API_BASE_URL, sortBy, queryParams);
     }
 
+    public static List<Movie> getMovies(String sortBy){
+        LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
+        queryParams.put(MOVIE_DB_API_API_KEY_QUERY_PARAM, API_KEY);
+        return NetworkUtils.getMovieList(MOVIE_DB_API_BASE_URL, sortBy, queryParams);
+    }
+
     public static List<Movie> getMovieList(String jsonString){
         return Movie.getMovieList(jsonString);
     }

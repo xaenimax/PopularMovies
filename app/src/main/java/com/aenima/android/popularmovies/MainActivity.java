@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             try{
                 URL movieListURL = new URL(movieDBListUrlString);
-                return NetworkUtils.getHttpResponse(movieListURL);
+                return NetworkUtils.getMovieList(movieListURL);
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;

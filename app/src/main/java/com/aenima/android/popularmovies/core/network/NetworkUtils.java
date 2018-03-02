@@ -3,19 +3,36 @@ package com.aenima.android.popularmovies.core.network;
 import android.net.Uri;
 import android.util.Log;
 
+import com.aenima.android.popularmovies.core.model.Movie;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Scanner;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Created by marina on 20/02/2018.
  */
 
 public class NetworkUtils {
+
+    public static MovieService getService(String baseUrl){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .build();
+
+        return retrofit.create(MovieService.class);
+    }
 
     /**
      * Parse the given base url adding parameters
@@ -66,5 +83,22 @@ public class NetworkUtils {
             httpURLConnection.disconnect();
         }
         return httpResponse;
+    }
+
+    public static List<Movie> getMovieList(String movieDbApiBaseUrl, String sortBy, String apiKey) {
+        List<Movie> returnList = null;
+        MovieService service = getService(movieDbApiBaseUrl);
+        Call<List<Movie>> moviesCall = service.getMovieList(sortBy, apiKey);
+        moviesCall.enqueue(new Callback<List<Movie>>() {
+            @Override
+            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                List<Movie> movies = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<List<Movie>> call, Throwable t) {
+                Log.e(getClass().getName(), "Failed to load movies");
+            }
+        });
     }
 }
