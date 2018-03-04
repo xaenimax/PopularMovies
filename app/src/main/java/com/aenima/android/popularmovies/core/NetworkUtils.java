@@ -50,6 +50,7 @@ public class NetworkUtils {
             Log.e(NetworkUtils.class.getName(), ex.getLocalizedMessage());
         }
 
+        
         return validUrl;
     }
 
