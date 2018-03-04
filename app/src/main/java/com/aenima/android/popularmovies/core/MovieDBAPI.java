@@ -1,20 +1,16 @@
 package com.aenima.android.popularmovies.core;
 
-import android.net.Uri;
-import android.util.Log;
-
 import com.aenima.android.popularmovies.BuildConfig;
 import com.aenima.android.popularmovies.core.model.Movie;
+import com.aenima.android.popularmovies.core.model.MovieList;
+import com.aenima.android.popularmovies.core.network.NetworkUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Retrofit;
 
 /**
  * Created by marina on 20/02/2018.
@@ -26,7 +22,7 @@ public class MovieDBAPI {
     private static final String API_KEY = BuildConfig.API_KEY;
 
     //https://api.themoviedb.org/3/movie/popular?api_key=
-    private static String MOVIE_DB_API_BASE_URL = "https://api.themoviedb.org/3/movie";
+    private static String MOVIE_DB_API_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static String MOVIE_DB_API_API_KEY_QUERY_PARAM = "api_key";
 
 
@@ -42,5 +38,9 @@ public class MovieDBAPI {
 
     public static List<Movie> getMovieList(String jsonString){
         return Movie.getMovieList(jsonString);
+    }
+
+    public static Call<MovieList> getMovies(String sortBy){
+        return NetworkUtils.getMovies(MOVIE_DB_API_BASE_URL , sortBy, API_KEY);
     }
 }

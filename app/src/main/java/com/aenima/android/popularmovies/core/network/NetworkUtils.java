@@ -1,16 +1,26 @@
-package com.aenima.android.popularmovies.core;
+package com.aenima.android.popularmovies.core.network;
 
 import android.net.Uri;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
+import com.aenima.android.popularmovies.core.model.Movie;
+import com.aenima.android.popularmovies.core.model.MovieList;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by marina on 20/02/2018.
@@ -50,7 +60,7 @@ public class NetworkUtils {
             Log.e(NetworkUtils.class.getName(), ex.getLocalizedMessage());
         }
 
-        
+
         return validUrl;
     }
 
@@ -68,5 +78,17 @@ public class NetworkUtils {
             httpURLConnection.disconnect();
         }
         return httpResponse;
+    }
+
+    public static Call<MovieList> getMovies(String baseUrl, String sortBy, String apiKey) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
+                .callbackExecutor(Executors.newSingleThreadExecutor())
+                .build();
+
+
+        MovieService service = retrofit.create(MovieService.class);
+        Call<MovieList> callBack = service.listMovie(sortBy, apiKey);
+        return callBack;
     }
 }
