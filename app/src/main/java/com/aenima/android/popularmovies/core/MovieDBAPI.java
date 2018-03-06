@@ -3,6 +3,8 @@ package com.aenima.android.popularmovies.core;
 import com.aenima.android.popularmovies.BuildConfig;
 import com.aenima.android.popularmovies.core.model.Movie;
 import com.aenima.android.popularmovies.core.model.MovieList;
+import com.aenima.android.popularmovies.core.model.ReviewList;
+import com.aenima.android.popularmovies.core.model.VideoList;
 import com.aenima.android.popularmovies.core.network.NetworkUtils;
 
 import java.net.URL;
@@ -42,5 +44,13 @@ public class MovieDBAPI {
 
     public static Call<MovieList> getMovies(String sortBy){
         return NetworkUtils.getMovies(MOVIE_DB_API_BASE_URL , sortBy, API_KEY);
+    }
+
+    public static Call<ReviewList> getMovieReviews(String movieId){
+        return NetworkUtils.getMovieReviews(MOVIE_DB_API_BASE_URL , movieId, API_KEY);
+    }
+
+    public static Call<VideoList> getMovieVideos(String movieId){
+        return NetworkUtils.getMovieVideos(MOVIE_DB_API_BASE_URL , movieId, API_KEY);
     }
 }

@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.aenima.android.popularmovies.core.model.Movie;
 import com.aenima.android.popularmovies.core.model.MovieList;
+import com.aenima.android.popularmovies.core.model.ReviewList;
+import com.aenima.android.popularmovies.core.model.VideoList;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,5 +93,25 @@ public class NetworkUtils {
         return callBack;
     }
 
+    public static Call<ReviewList> getMovieReviews(String baseUrl, String movieId, String apiKey) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
+                .callbackExecutor(Executors.newSingleThreadExecutor())
+                .build();
 
+        MovieService service = retrofit.create(MovieService.class);
+        Call<ReviewList> callBack = service.listMovieReviews(movieId, apiKey);
+        return callBack;
+    }
+
+    public static Call<VideoList> getMovieVideos(String baseUrl, String movieId, String apiKey) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
+                .callbackExecutor(Executors.newSingleThreadExecutor())
+                .build();
+
+        MovieService service = retrofit.create(MovieService.class);
+        Call<VideoList> callBack = service.listMovieVideos(movieId, apiKey);
+        return callBack;
+    }
 }

@@ -231,4 +231,8 @@ public class Movie implements Parcelable{
     public float getVoteAvg() {
         return this.movieVoteAvg;
     }
+
+    public String getIdString() {
+        return String.valueOf(this.movieId);
+    }
 }

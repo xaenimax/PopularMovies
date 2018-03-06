@@ -11,11 +11,17 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.aenima.android.popularmovies.core.MovieDBAPI;
 import com.aenima.android.popularmovies.core.model.Movie;
+import com.aenima.android.popularmovies.core.model.ReviewList;
+import com.aenima.android.popularmovies.core.model.VideoList;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -80,6 +86,32 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
         */
+
+        Call<ReviewList> reviewListCall = MovieDBAPI.getMovieReviews(selectedMovie.getIdString());
+        reviewListCall.enqueue(new Callback<ReviewList>() {
+            @Override
+            public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ReviewList> call, Throwable t) {
+
+            }
+        });
+
+        Call<VideoList> videoListCall = MovieDBAPI.getMovieVideos(selectedMovie.getIdString());
+        videoListCall.enqueue(new Callback<VideoList>() {
+            @Override
+            public void onResponse(Call<VideoList> call, Response<VideoList> response) {
+                
+            }
+
+            @Override
+            public void onFailure(Call<VideoList> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
