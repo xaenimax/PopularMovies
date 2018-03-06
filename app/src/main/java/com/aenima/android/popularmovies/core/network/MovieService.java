@@ -2,6 +2,8 @@ package com.aenima.android.popularmovies.core.network;
 
 import com.aenima.android.popularmovies.core.model.Movie;
 import com.aenima.android.popularmovies.core.model.MovieList;
+import com.aenima.android.popularmovies.core.model.ReviewList;
+import com.aenima.android.popularmovies.core.model.VideoList;
 
 import java.util.List;
 
@@ -17,5 +19,11 @@ import retrofit2.http.Query;
 public interface MovieService {
 
     @GET("{sortBy}")
-    Call<MovieList> listMovie(@Path("sortBy") String user, @Query("api_key") String apiKey);
+    Call<MovieList> listMovie(@Path("sortBy") String sortBy, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/videos")
+    Call<VideoList> listMovieVideos(@Path("id") String movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Call<ReviewList> listMovieReviews(@Path("id") String movieId, @Query("api_key") String apiKey);
 }

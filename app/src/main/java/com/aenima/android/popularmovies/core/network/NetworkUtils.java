@@ -86,9 +86,10 @@ public class NetworkUtils {
                 .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();
 
-
         MovieService service = retrofit.create(MovieService.class);
         Call<MovieList> callBack = service.listMovie(sortBy, apiKey);
         return callBack;
     }
+
+
 }
