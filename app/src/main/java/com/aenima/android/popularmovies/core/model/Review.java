@@ -8,7 +8,7 @@ import java.net.URL;
  * Created by aenim on 06/03/2018.
  */
 
-class Review {
+public class Review {
 
     private static final String ID_JSON_HEADER = "id";
     private static final String AUTHOR_JSON_HEADER = "author";

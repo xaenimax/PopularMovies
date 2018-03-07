@@ -83,7 +83,13 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
 
             @Override
             public void onFailure(Call<MovieList> call, Throwable t) {
-                showErrorMessage();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showErrorMessage();
+
+                    }
+                });
             }
         });
     }

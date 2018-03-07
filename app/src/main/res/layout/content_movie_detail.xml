@@ -58,7 +58,8 @@
             app:layout_constraintStart_toStartOf="@id/vote_avg_ll"
             android:id="@+id/release_date_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/release_date_description"/>
         <TextView
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@id/main_poster_iv"
@@ -73,5 +74,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/movie_original_title"/>
-   </android.support.constraint.ConstraintLayout>
+        <fragment
+            android:id="@+id/review_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

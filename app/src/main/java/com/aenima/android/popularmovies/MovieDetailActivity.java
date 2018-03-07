@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
 import com.aenima.android.popularmovies.core.model.Movie;
@@ -22,6 +23,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -59,22 +62,25 @@ public class MovieDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
-        Movie selectedMovie = getIntent().getParcelableExtra(getString(R.string.EXTRA_MOVIE_KEY));
-        releaseDateTextView.setText(getString(R.string.release_date_label) + " " + selectedMovie.getReleaseDate());
-        setTitle(String.valueOf(selectedMovie.getTitle()));
+        if(getIntent() != null && getIntent().hasExtra(getString(R.string.EXTRA_MOVIE_KEY))) {
 
-        if(selectedMovie.getOriginalTitle() != null) {
-            originalTitleTextView.setText(getString(R.string.original_title_label) + " " + selectedMovie.getOriginalTitle());
-            originalTitleTextView.setVisibility(View.VISIBLE);
 
-        }else {
-            originalTitleTextView.setVisibility(View.GONE);
-        }
-        overviewTextView.setText(selectedMovie.getOverview());
-        movieRatingBar.setRating(selectedMovie.getVoteAvg());
-        voteAvgTextView.setText(String.valueOf(selectedMovie.getVoteAvg())+ getString(R.string.rating_ten_string));
-        Picasso.with(this).load(selectedMovie.getBackDropImagePath()).into(movieDetailImageView);
-        Picasso.with(this).load(selectedMovie.getPosterImagePath()).into(moviePosterImageView);
+            Movie selectedMovie = getIntent().getParcelableExtra(getString(R.string.EXTRA_MOVIE_KEY));
+            releaseDateTextView.setText(getString(R.string.release_date_label) + " " + selectedMovie.getReleaseDate());
+            setTitle(String.valueOf(selectedMovie.getTitle()));
+
+            if (selectedMovie.getOriginalTitle() != null) {
+                originalTitleTextView.setText(getString(R.string.original_title_label) + " " + selectedMovie.getOriginalTitle());
+                originalTitleTextView.setVisibility(View.VISIBLE);
+
+            } else {
+                originalTitleTextView.setVisibility(View.GONE);
+            }
+            overviewTextView.setText(selectedMovie.getOverview());
+            movieRatingBar.setRating(selectedMovie.getVoteAvg());
+            voteAvgTextView.setText(String.valueOf(selectedMovie.getVoteAvg()) + getString(R.string.rating_ten_string));
+            Picasso.with(this).load(selectedMovie.getBackDropImagePath()).into(movieDetailImageView);
+            Picasso.with(this).load(selectedMovie.getPosterImagePath()).into(moviePosterImageView);
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -87,35 +93,45 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
         */
 
-        Call<ReviewList> reviewListCall = MovieDBAPI.getMovieReviews(selectedMovie.getIdString());
-        reviewListCall.enqueue(new Callback<ReviewList>() {
-            @Override
-            public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
+            Call<ReviewList> reviewListCall = MovieDBAPI.getMovieReviews(selectedMovie.getIdString());
+            reviewListCall.enqueue(new Callback<ReviewList>() {
+                @Override
+                public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
 
-            }
+                }
 
-            @Override
-            public void onFailure(Call<ReviewList> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ReviewList> call, Throwable t) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showErrorMessage();
+                        }
+                    });
+                }
+            });
 
-            }
-        });
+            Call<VideoList> videoListCall = MovieDBAPI.getMovieVideos(selectedMovie.getIdString());
+            videoListCall.enqueue(new Callback<VideoList>() {
+                @Override
+                public void onResponse(Call<VideoList> call, Response<VideoList> response) {
 
-        Call<VideoList> videoListCall = MovieDBAPI.getMovieVideos(selectedMovie.getIdString());
-        videoListCall.enqueue(new Callback<VideoList>() {
-            @Override
-            public void onResponse(Call<VideoList> call, Response<VideoList> response) {
-                
-            }
+                }
 
-            @Override
-            public void onFailure(Call<VideoList> call, Throwable t) {
-
-            }
-        });
+                @Override
+                public void onFailure(Call<VideoList> call, Throwable t) {
+                    showErrorMessage();
+                }
+            });
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    private void showErrorMessage() {
+        Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG).show();
     }
 }
