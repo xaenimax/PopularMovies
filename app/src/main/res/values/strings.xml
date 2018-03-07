@@ -19,4 +19,7 @@
     <string name="release_date_description">Release date</string>
     <string name="POSITION_BUNDLE_KEY">position</string>
     <string name="rating_ten_string">/10</string>
+    <string name="review_title_description">Review Title</string>
+    <string name="review_content_description">Review Content</string>
+    <string name="review_author_description">Review Author</string>
 </resources>
