@@ -7,7 +7,10 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.aenima.android.popularmovies.MovieDetailActivity"
     tools:showIn="@layout/activity_movie_detail"
-    android:id="@+id/movie_detail_sv">
+    android:id="@+id/movie_detail_sv"
+    app:behavior_overlapTop="50dp"
+
+    >
     <android.support.constraint.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -25,8 +28,8 @@
             app:layout_anchorGravity="bottom|end"/>
         <LinearLayout
             android:id="@+id/vote_avg_ll"
-            android:layout_margin="50dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="70dp"
+            app:layout_constraintTop_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/main_poster_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,7 +60,8 @@
             app:layout_constraintStart_toStartOf="@id/vote_avg_ll"
             android:id="@+id/release_date_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/release_date_description"/>
         <TextView
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@id/main_poster_iv"
@@ -72,5 +76,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/movie_original_title"/>
-   </android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

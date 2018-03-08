@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
+import com.aenima.android.popularmovies.core.model.MovieList;
 import com.aenima.android.popularmovies.core.network.NetworkUtils;
 import com.aenima.android.popularmovies.core.model.Movie;
 import com.aenima.android.popularmovies.core.movieadapter.MovieAdapter;
@@ -29,10 +30,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
-    private static final int MOVIE_DB_LOADER_ID = 75;
-    private static final String LIST_MOVIE_URL_EXTRA = "list_movie_url_extra";
+public class MainActivity extends AppCompatActivity {// implements LoaderManager.LoaderCallbacks<String>{
+    //private static final int MOVIE_DB_LOADER_ID = 75;
+    private static final String SORT_BY_EXTRA = "sort_by_extra";
     private static final String RECYCLER_VIEW_STATE = "recycler_view_state";
     private Parcelable mRecyclerViewState = null;
 
@@ -63,15 +67,38 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //gridLayoutManager.onRestoreInstanceState(state);
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         selectedSortBy = sharedPreferences.getString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL);
-        startAsyncLoader();
-
+        //startAsyncLoader();
+        loadMovies();
 
     }
 
+    private void loadMovies(){
+        Call<MovieList> callBack = MovieDBAPI.getMovies(selectedSortBy);
+        callBack.enqueue(new Callback<MovieList>() {
+            @Override
+            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+                MovieList results = response.body();
+                showMovieList(results);
+            }
+
+            @Override
+            public void onFailure(Call<MovieList> call, Throwable t) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showErrorMessage();
+
+                    }
+                });
+            }
+        });
+    }
+
+    /*
     private  void startAsyncLoader(){
         Bundle bundle = new Bundle();
-        URL movieDbListUrl = MovieDBAPI.getMovieListUrl(selectedSortBy);
-        bundle.putString(LIST_MOVIE_URL_EXTRA, movieDbListUrl.toString());
+        //URL movieDbListUrl = MovieDBAPI.getMovieListUrl(selectedSortBy);
+        bundle.putString(SORT_BY_EXTRA,selectedSortBy);
         // movieRecyclerView.setHasFixedSize(true);
         if (getSupportLoaderManager().getLoader(MOVIE_DB_LOADER_ID) == null) {
             getSupportLoaderManager().initLoader(MOVIE_DB_LOADER_ID, bundle, this);
@@ -80,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         }
     }
+    */
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -93,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onSaveInstanceState(savedInstanceState);
         mRecyclerViewState = gridLayoutManager.onSaveInstanceState();
         savedInstanceState.putParcelable(RECYCLER_VIEW_STATE, mRecyclerViewState);
-
     }
 
     @Override
@@ -115,7 +142,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             sharedPreferences.edit().putString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL).apply();
             if (!selectedSortBy.equals(MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL)){
                 selectedSortBy = MovieDBAPI.MOVIE_DB_API_POPULAR_PARTIAL_URL;
-                startAsyncLoader();
+                //startAsyncLoader();
+                loadMovies();
             }
 
             return true;
@@ -124,7 +152,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             sharedPreferences.edit().putString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_TOP_RATED_PARTIAL_URL).apply();
             if (!selectedSortBy.equals(MovieDBAPI.MOVIE_DB_API_TOP_RATED_PARTIAL_URL)){
                 selectedSortBy = MovieDBAPI.MOVIE_DB_API_TOP_RATED_PARTIAL_URL;
-                startAsyncLoader();
+                //startAsyncLoader();
+                loadMovies();
             }
             return true;
         }
@@ -136,30 +165,37 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG).show();
     }
 
-    private void showMovieList(String data) {
-        List<Movie> movieList = MovieDBAPI.getMovieList(data);
-        if(movieAdapter == null) {
-            movieAdapter = new MovieAdapter(movieList, new MovieAdapter.OnMovieClickListener() {
-                @Override
-                public void onMovieClick(Movie movie) {
-                    Intent detailActivityIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
-                    detailActivityIntent.putExtra(getString(R.string.EXTRA_MOVIE_KEY), movie);
-                    startActivity(detailActivityIntent);
+    private void showMovieList(final MovieList results) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                List<Movie> movieList = results.movieList;
+                if(movieAdapter == null) {
+                    movieAdapter = new MovieAdapter(movieList, new MovieAdapter.OnMovieClickListener() {
+                        @Override
+                        public void onMovieClick(Movie movie) {
+                            Intent detailActivityIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
+                            detailActivityIntent.putExtra(getString(R.string.EXTRA_MOVIE_KEY), movie);
+                            startActivity(detailActivityIntent);
+                        }
+                    });
+                    movieRecyclerView.setAdapter(movieAdapter);
+                    // use a gridlayout
+                    movieRecyclerView.setLayoutManager(gridLayoutManager);
                 }
-            });
-            movieRecyclerView.setAdapter(movieAdapter);
-            // use a gridlayout
-            movieRecyclerView.setLayoutManager(gridLayoutManager);
-        }
-        else {
-            movieAdapter.updateData(movieList);
-            movieAdapter.notifyDataSetChanged();
-        }
-        if(mRecyclerViewState != null) {
-            gridLayoutManager.onRestoreInstanceState(mRecyclerViewState);
-        }
+                else {
+                    movieAdapter.updateData(movieList);
+                    movieAdapter.notifyDataSetChanged();
+                }
+                if(mRecyclerViewState != null) {
+                    gridLayoutManager.onRestoreInstanceState(mRecyclerViewState);
+                }
+            }
+        });
+
     }
 
+    /*
     public static class MovieListLoader extends AsyncTaskLoader<String>{
         Bundle mBundle;
 
@@ -179,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         @Override
         public String loadInBackground() {
-            String movieDBListUrlString = mBundle.getString(LIST_MOVIE_URL_EXTRA);
+            String movieDBListUrlString = mBundle.getString(SORT_BY_EXTRA);
             if(movieDBListUrlString == null){
                 return null;
             }
@@ -213,4 +249,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(Loader<String> loader) {
 
     }
+    */
 }

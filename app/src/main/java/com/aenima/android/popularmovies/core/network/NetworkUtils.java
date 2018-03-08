@@ -3,7 +3,9 @@ package com.aenima.android.popularmovies.core.network;
 import android.net.Uri;
 import android.util.Log;
 
-import com.aenima.android.popularmovies.core.model.Movie;
+import com.aenima.android.popularmovies.core.model.MovieList;
+import com.aenima.android.popularmovies.core.model.ReviewList;
+import com.aenima.android.popularmovies.core.model.VideoList;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,6 +75,7 @@ public class NetworkUtils {
             Log.e(NetworkUtils.class.getName(), ex.getLocalizedMessage());
         }
 
+
         return validUrl;
     }
 
@@ -85,20 +95,36 @@ public class NetworkUtils {
         return httpResponse;
     }
 
-    public static List<Movie> getMovieList(String movieDbApiBaseUrl, String sortBy, String apiKey) {
-        List<Movie> returnList = null;
-        MovieService service = getService(movieDbApiBaseUrl);
-        Call<List<Movie>> moviesCall = service.getMovieList(sortBy, apiKey);
-        moviesCall.enqueue(new Callback<List<Movie>>() {
-            @Override
-            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
-                List<Movie> movies = response.body();
-            }
+    public static Call<MovieList> getMovies(String baseUrl, String sortBy, String apiKey) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
+                .callbackExecutor(Executors.newSingleThreadExecutor())
+                .build();
 
-            @Override
-            public void onFailure(Call<List<Movie>> call, Throwable t) {
-                Log.e(getClass().getName(), "Failed to load movies");
-            }
-        });
+        MovieService service = retrofit.create(MovieService.class);
+        Call<MovieList> callBack = service.listMovie(sortBy, apiKey);
+        return callBack;
+    }
+
+    public static Call<ReviewList> getMovieReviews(String baseUrl, String movieId, String apiKey) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
+                .callbackExecutor(Executors.newSingleThreadExecutor())
+                .build();
+
+        MovieService service = retrofit.create(MovieService.class);
+        Call<ReviewList> callBack = service.listMovieReviews(movieId, apiKey);
+        return callBack;
+    }
+
+    public static Call<VideoList> getMovieVideos(String baseUrl, String movieId, String apiKey) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
+                .callbackExecutor(Executors.newSingleThreadExecutor())
+                .build();
+
+        MovieService service = retrofit.create(MovieService.class);
+        Call<VideoList> callBack = service.listMovieVideos(movieId, apiKey);
+        return callBack;
     }
 }

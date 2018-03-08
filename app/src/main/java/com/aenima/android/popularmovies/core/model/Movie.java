@@ -70,7 +70,7 @@ public class Movie implements Parcelable{
     private boolean movieHasVideo;
     @SerializedName(ADULT_JSON_HEADER)
     private boolean movieIsAdult;
-    @SerializedName(TITLE_JSON_HEADER)
+    @SerializedName(VOTE_AVERAGE_JSON_HEADER)
     private float movieVoteAvg;
     @SerializedName(POPULARITY_JSON_HEADER)
     private float moviePopularity;
@@ -141,6 +141,7 @@ public class Movie implements Parcelable{
             return null;
         }
     }
+
 
     public static List<Movie> getMovieList(String jsonString){
         List<Movie> movieList = new ArrayList<>();
@@ -229,5 +230,9 @@ public class Movie implements Parcelable{
 
     public float getVoteAvg() {
         return this.movieVoteAvg;
+    }
+
+    public String getIdString() {
+        return String.valueOf(this.movieId);
     }
 }
