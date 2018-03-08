@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
                     movieAdapter = new MovieAdapter(movieList, new MovieAdapter.OnMovieClickListener() {
                         @Override
                         public void onMovieClick(Movie movie) {
-                            Intent detailActivityIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
+                            Intent detailActivityIntent = new Intent(MainActivity.this, DetailActivity.class);
                             detailActivityIntent.putExtra(getString(R.string.EXTRA_MOVIE_KEY), movie);
                             startActivity(detailActivityIntent);
                         }

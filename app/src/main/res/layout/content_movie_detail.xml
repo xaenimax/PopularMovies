@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.aenima.android.popularmovies.MovieDetailActivity"
     tools:showIn="@layout/activity_movie_detail"
-    android:id="@+id/movie_detail_sv"
+
     app:behavior_overlapTop="50dp"
 
     >

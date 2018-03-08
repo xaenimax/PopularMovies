@@ -22,4 +22,9 @@
     <string name="review_title_description">Review Title</string>
     <string name="review_content_description">Review Content</string>
     <string name="review_author_description">Review Author</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
