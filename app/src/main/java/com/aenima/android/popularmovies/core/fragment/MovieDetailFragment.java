@@ -3,6 +3,7 @@ package com.aenima.android.popularmovies.core.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +15,12 @@ import android.widget.TextView;
 
 import com.aenima.android.popularmovies.R;
 import com.aenima.android.popularmovies.core.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MovieDetailFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MovieDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class MovieDetailFragment extends Fragment {
     @BindView(R.id.release_date_tv)
     TextView releaseDateTextView;
@@ -35,11 +31,8 @@ public class MovieDetailFragment extends Fragment {
     @BindView(R.id.movie_overview_tv)
     TextView overviewTextView;
 
-    @BindView(R.id.movie_detail_sv)
-    ScrollView movieScrollView;
-
-    //@BindView(R.id.backdrop_iv)
-    //ImageView movieDetailImageView;
+    @BindView(R.id.backdrop_iv)
+    ImageView movieDetailImageView;
 
     @BindView(R.id.main_poster_iv)
     ImageView moviePosterImageView;
@@ -53,10 +46,9 @@ public class MovieDetailFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String SELECTED_MOVIE_PARAM = "selected_movie";
 
-    private OnFavouriteSavedInteractionListener mListener;
-
     Movie mMovie;
 
+    private Context context;
     public MovieDetailFragment() {
         // Required empty public constructor
     }
@@ -68,7 +60,6 @@ public class MovieDetailFragment extends Fragment {
      * @param selectedMovie Parameter 1.
      * @return A new instance of fragment MovieDetailFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MovieDetailFragment newInstance(Movie selectedMovie) {
         MovieDetailFragment fragment = new MovieDetailFragment();
         Bundle args = new Bundle();
@@ -80,54 +71,55 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mMovie = getArguments().getParcelable(SELECTED_MOVIE_PARAM);
         }
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        releaseDateTextView.setText(getString(R.string.release_date_label) + " " + mMovie.getReleaseDate());
+        //setTitle(String.valueOf(selectedMovie.getTitle()));
+
+        if (mMovie.getOriginalTitle() != null) {
+            originalTitleTextView.setText(getString(R.string.original_title_label) + " " + mMovie.getOriginalTitle());
+            originalTitleTextView.setVisibility(View.VISIBLE);
+
+        } else {
+            originalTitleTextView.setVisibility(View.GONE);
+        }
+        overviewTextView.setText(mMovie.getOverview());
+        movieRatingBar.setRating(mMovie.getVoteAvg());
+        voteAvgTextView.setText(String.valueOf(mMovie.getVoteAvg()) + getString(R.string.rating_ten_string));
+        Picasso.with(context).load(mMovie.getBackDropImagePath()).into(movieDetailImageView);
+        Picasso.with(context).load(mMovie.getPosterImagePath()).into(moviePosterImageView);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFavouriteSaved(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFavouriteSavedInteractionListener) {
-            mListener = (OnFavouriteSavedInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        this.context = context;
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFavouriteSavedInteractionListener {
-        // TODO: Update argument type and name
-        void onFavouriteSaved(Uri uri);
-    }
 }

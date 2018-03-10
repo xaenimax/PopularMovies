@@ -15,12 +15,13 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.aenima.android.popularmovies.core.fragment.MovieDetailFragment;
+import com.aenima.android.popularmovies.core.fragment.MovieReviewFragment;
 import com.aenima.android.popularmovies.core.model.Movie;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailActivity extends AppCompatActivity implements MovieDetailFragment.OnFavouriteSavedInteractionListener{
+public class DetailActivity extends AppCompatActivity{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -76,11 +77,6 @@ public class DetailActivity extends AppCompatActivity implements MovieDetailFrag
     }
 
 
-    @Override
-    public void onFavouriteSaved(Uri uri) {
-     //TODO da fare
-    }
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -93,8 +89,18 @@ public class DetailActivity extends AppCompatActivity implements MovieDetailFrag
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            return MovieDetailFragment.newInstance(selectedMovie);
+            switch (position){
+                case 0:
+                    return MovieDetailFragment.newInstance(selectedMovie);
+                case 1:
+                    return MovieReviewFragment.newInstance(selectedMovie.getIdString());
+                case 2:
+                    return MovieDetailFragment.newInstance(selectedMovie);
+
+                default:
+                        return null;
+            }
+
         }
 
         @Override

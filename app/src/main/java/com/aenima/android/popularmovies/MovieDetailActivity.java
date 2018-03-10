@@ -37,8 +37,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_overview_tv)
     TextView overviewTextView;
 
-    @BindView(R.id.movie_detail_sv)
-    NestedScrollView movieScrollView;
+    //@BindView(R.id.movie_detail_sv)
+    //NestedScrollView movieScrollView;
 
     @BindView(R.id.backdrop_iv)
     ImageView movieDetailImageView;
@@ -93,23 +93,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
         */
 
-            Call<ReviewList> reviewListCall = MovieDBAPI.getMovieReviews(selectedMovie.getIdString());
-            reviewListCall.enqueue(new Callback<ReviewList>() {
-                @Override
-                public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
 
-                }
-
-                @Override
-                public void onFailure(Call<ReviewList> call, Throwable t) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showErrorMessage();
-                        }
-                    });
-                }
-            });
 
             Call<VideoList> videoListCall = MovieDBAPI.getMovieVideos(selectedMovie.getIdString());
             videoListCall.enqueue(new Callback<VideoList>() {
