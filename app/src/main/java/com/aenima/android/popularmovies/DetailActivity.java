@@ -3,6 +3,7 @@ package com.aenima.android.popularmovies;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -15,6 +16,9 @@ import android.view.View;
 
 import com.aenima.android.popularmovies.core.fragment.MovieDetailFragment;
 import com.aenima.android.popularmovies.core.model.Movie;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity implements MovieDetailFragment.OnFavouriteSavedInteractionListener{
 
@@ -31,15 +35,21 @@ public class DetailActivity extends AppCompatActivity implements MovieDetailFrag
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    @BindView(R.id.container)
+    ViewPager mViewPager;
 
     Movie selectedMovie;
+
+    @BindView(R.id.sliding_tabs)
+    TabLayout mTabLayout;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -47,15 +57,14 @@ public class DetailActivity extends AppCompatActivity implements MovieDetailFrag
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         if(getIntent() != null && getIntent().hasExtra(getString(R.string.EXTRA_MOVIE_KEY))) {
             selectedMovie = getIntent().getParcelableExtra(getString(R.string.EXTRA_MOVIE_KEY));
         }
+        // Give the TabLayout the ViewPager
+        mTabLayout.setupWithViewPager(mViewPager);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +86,7 @@ public class DetailActivity extends AppCompatActivity implements MovieDetailFrag
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
+        String[] tabTitles = new String[]{getString(R.string.detail_tab_title), getString(R.string.review_tab_title), getString(R.string.video_tab_title)};
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -92,6 +101,12 @@ public class DetailActivity extends AppCompatActivity implements MovieDetailFrag
         public int getCount() {
             // Show 3 total pages.
             return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            // Generate title based on item position
+            return tabTitles[position];
         }
     }
 }
