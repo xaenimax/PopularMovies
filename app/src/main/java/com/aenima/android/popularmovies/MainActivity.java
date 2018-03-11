@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
 import com.aenima.android.popularmovies.core.model.MovieList;
+import com.aenima.android.popularmovies.core.model.ReviewList;
 import com.aenima.android.popularmovies.core.network.NetworkUtils;
 import com.aenima.android.popularmovies.core.model.Movie;
 import com.aenima.android.popularmovies.core.movieadapter.MovieAdapter;
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
         super.onRestoreInstanceState(savedInstanceState);
         mRecyclerViewState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE);
 
+
     }
 
     @Override
@@ -174,6 +176,7 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
                     movieAdapter = new MovieAdapter(movieList, new MovieAdapter.OnMovieClickListener() {
                         @Override
                         public void onMovieClick(Movie movie) {
+
                             Intent detailActivityIntent = new Intent(MainActivity.this, DetailActivity.class);
                             detailActivityIntent.putExtra(getString(R.string.EXTRA_MOVIE_KEY), movie);
                             startActivity(detailActivityIntent);

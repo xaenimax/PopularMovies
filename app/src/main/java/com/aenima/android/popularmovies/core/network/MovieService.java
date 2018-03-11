@@ -21,9 +21,9 @@ public interface MovieService {
     @GET("{sortBy}")
     Call<MovieList> listMovie(@Path("sortBy") String sortBy, @Query("api_key") String apiKey);
 
-    @GET("movie/{id}/videos")
+    @GET("{id}/videos")
     Call<VideoList> listMovieVideos(@Path("id") String movieId, @Query("api_key") String apiKey);
 
-    @GET("movie/{id}/reviews")
+    @GET("{id}/reviews")
     Call<ReviewList> listMovieReviews(@Path("id") String movieId, @Query("api_key") String apiKey);
 }

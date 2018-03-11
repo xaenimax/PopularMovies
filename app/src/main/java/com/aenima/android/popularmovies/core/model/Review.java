@@ -1,5 +1,8 @@
 package com.aenima.android.popularmovies.core.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.net.URL;
@@ -16,7 +19,7 @@ public class Review {
     private static final String URL_JSON_HEADER = "url";
 
     @SerializedName(ID_JSON_HEADER)
-    private long id;
+    private String id;
 
     @SerializedName(AUTHOR_JSON_HEADER)
     public String author;

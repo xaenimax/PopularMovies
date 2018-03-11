@@ -12,14 +12,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.aenima.android.popularmovies.core.MovieDBAPI;
 import com.aenima.android.popularmovies.core.fragment.MovieDetailFragment;
 import com.aenima.android.popularmovies.core.fragment.MovieReviewFragment;
 import com.aenima.android.popularmovies.core.model.Movie;
+import com.aenima.android.popularmovies.core.model.ReviewList;
+import com.aenima.android.popularmovies.core.model.VideoList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetailActivity extends AppCompatActivity{
 
@@ -40,6 +48,8 @@ public class DetailActivity extends AppCompatActivity{
     ViewPager mViewPager;
 
     Movie selectedMovie;
+    ReviewList reviewList;
+    VideoList videoList;
 
     @BindView(R.id.sliding_tabs)
     TabLayout mTabLayout;
@@ -75,7 +85,9 @@ public class DetailActivity extends AppCompatActivity{
         });
 
     }
-
+    private void showErrorMessage() {
+        Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG).show();
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -93,7 +105,34 @@ public class DetailActivity extends AppCompatActivity{
                 case 0:
                     return MovieDetailFragment.newInstance(selectedMovie);
                 case 1:
-                    return MovieReviewFragment.newInstance(selectedMovie.getIdString());
+                    final MovieReviewFragment fragment = MovieReviewFragment.newInstance();
+                    if(reviewList == null) {
+                        Call<ReviewList> reviewListCall = MovieDBAPI.getMovieReviews(selectedMovie.getIdString());
+                        reviewListCall.enqueue(new Callback<ReviewList>() {
+                            @Override
+                            public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
+                                reviewList = response.body();
+                                fragment.setReviewList(reviewList);
+                            }
+
+                            @Override
+                            public void onFailure(Call<ReviewList> call, Throwable t) {
+                                Log.e(this.getClass().getName(), "Errore : " +t.getLocalizedMessage());
+                                runOnUiThread(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        showErrorMessage();
+                                    }
+                                });
+
+                            }
+                        });
+                    }else {
+                        fragment.setReviewList(reviewList);
+                    }
+                    return fragment;
+
                 case 2:
                     return MovieDetailFragment.newInstance(selectedMovie);
 

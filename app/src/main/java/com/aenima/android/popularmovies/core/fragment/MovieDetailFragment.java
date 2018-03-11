@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public class MovieDetailFragment extends Fragment {
@@ -47,7 +48,7 @@ public class MovieDetailFragment extends Fragment {
     private static final String SELECTED_MOVIE_PARAM = "selected_movie";
 
     Movie mMovie;
-
+    Unbinder bind;
     private Context context;
     public MovieDetailFragment() {
         // Required empty public constructor
@@ -105,7 +106,7 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-        ButterKnife.bind(this, view);
+        bind = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -120,6 +121,7 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        bind.unbind();
     }
 
 }

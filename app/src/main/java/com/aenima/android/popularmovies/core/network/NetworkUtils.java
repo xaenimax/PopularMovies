@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.aenima.android.popularmovies.core.model.MovieList;
+import com.aenima.android.popularmovies.core.model.Review;
 import com.aenima.android.popularmovies.core.model.ReviewList;
 import com.aenima.android.popularmovies.core.model.VideoList;
 
