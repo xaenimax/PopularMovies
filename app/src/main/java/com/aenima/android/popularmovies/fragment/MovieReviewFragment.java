@@ -1,4 +1,4 @@
-package com.aenima.android.popularmovies.core.fragment;
+package com.aenima.android.popularmovies.fragment;
 
 import android.content.Context;
 import android.os.Bundle;

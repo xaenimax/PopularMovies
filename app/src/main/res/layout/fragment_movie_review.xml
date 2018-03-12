@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.aenima.android.popularmovies.core.fragment.MovieReviewFragment">
+    tools:context=".fragment.MovieReviewFragment">
 
     <TextView
         android:id="@+id/title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:text="@string/review_tab_title"
         android:textSize="20sp"
         android:textStyle="bold"

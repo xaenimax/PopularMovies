@@ -16,8 +16,6 @@
         android:scrollbars="vertical"
         android:padding="1dp"
         >
-
-
     </android.support.v7.widget.RecyclerView>
     <ProgressBar
         android:visibility="gone"

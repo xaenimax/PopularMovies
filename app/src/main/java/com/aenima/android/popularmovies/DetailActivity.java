@@ -1,6 +1,5 @@
 package com.aenima.android.popularmovies;
 
-import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -17,11 +16,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
-import com.aenima.android.popularmovies.core.fragment.MovieDetailFragment;
-import com.aenima.android.popularmovies.core.fragment.MovieReviewFragment;
+import com.aenima.android.popularmovies.fragment.MovieDetailFragment;
+import com.aenima.android.popularmovies.fragment.MovieReviewFragment;
 import com.aenima.android.popularmovies.core.model.Movie;
 import com.aenima.android.popularmovies.core.model.ReviewList;
 import com.aenima.android.popularmovies.core.model.VideoList;
+import com.aenima.android.popularmovies.fragment.MovieVideoFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -134,7 +134,33 @@ public class DetailActivity extends AppCompatActivity{
                     return fragment;
 
                 case 2:
-                    return MovieDetailFragment.newInstance(selectedMovie);
+                    final MovieVideoFragment videoFragment = MovieVideoFragment.newInstance();
+                    if(videoList == null) {
+                        Call<VideoList> videoListCall = MovieDBAPI.getMovieVideos(selectedMovie.getIdString());
+                        videoListCall.enqueue(new Callback<VideoList>() {
+                            @Override
+                            public void onResponse(Call<VideoList> call, Response<VideoList> response) {
+                                videoList = response.body();
+                                videoFragment.setVideoList(videoList);
+                            }
+
+                            @Override
+                            public void onFailure(Call<VideoList> call, Throwable t) {
+                                Log.e(this.getClass().getName(), "Errore : " +t.getLocalizedMessage());
+                                runOnUiThread(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        showErrorMessage();
+                                    }
+                                });
+
+                            }
+                        });
+                    }else {
+                        videoFragment.setVideoList(videoList);
+                    }
+                    return videoFragment;
 
                 default:
                         return null;
