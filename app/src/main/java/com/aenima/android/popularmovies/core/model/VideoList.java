@@ -12,5 +12,5 @@ public class VideoList {
     private static final String RESULTS_JSON_HEADER = "results";
 
     @SerializedName(RESULTS_JSON_HEADER)
-    private List<Video> reviews;
+    public List<Video> videos;
 }

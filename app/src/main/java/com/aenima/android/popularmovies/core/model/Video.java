@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by aenim on 06/03/2018.
  */
 
-class Video {
+public class Video {
 
     //https://www.youtube.com/watch?v=CglpMulzqn4
 
@@ -35,4 +35,7 @@ class Video {
     @SerializedName(KEY_JSON_HEADER)
     public String key;
 
+    public String getYoutubeUrl() {
+        return String.format("https://img.youtube.com/vi/%s/0.jpg", this.key);
+    }
 }
