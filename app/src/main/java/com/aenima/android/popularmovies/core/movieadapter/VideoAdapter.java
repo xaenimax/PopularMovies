@@ -24,9 +24,11 @@ import butterknife.ButterKnife;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
     private List<Video> mVideoList;
+    OnVideoClickListener listener;
 
-    public VideoAdapter(List<Video> videoList){
+    public VideoAdapter(List<Video> videoList, OnVideoClickListener listener){
         mVideoList = videoList;
+        this.listener = listener;
     }
 
     @Override
@@ -36,13 +38,19 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     }
 
     @Override
-    public void onBindViewHolder(VideoViewHolder holder, int position) {
+    public void onBindViewHolder(VideoViewHolder holder, final int position) {
         Context context = holder.videoThumbNail.getContext();
         Video video = mVideoList.get(position);
         Log.d(this.getClass().getName(), video.getYoutubeUrl());
         Picasso.with(context).load(video.getYoutubeUrl()).into(holder.videoThumbNail);
         holder.videoName.setText(video.name);
         holder.sourceText.setText(context.getString(R.string.source_string) + " " + video.site);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClick(mVideoList.get(position));
+            }
+        });
     }
 
     @Override
@@ -63,5 +71,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface OnVideoClickListener{
+        public void onClick(Video video);
     }
 }

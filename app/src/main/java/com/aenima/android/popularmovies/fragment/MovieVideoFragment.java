@@ -1,16 +1,20 @@
 package com.aenima.android.popularmovies.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.aenima.android.popularmovies.R;
+import com.aenima.android.popularmovies.core.model.Video;
 import com.aenima.android.popularmovies.core.model.VideoList;
 import com.aenima.android.popularmovies.core.movieadapter.VideoAdapter;
 
@@ -83,7 +87,15 @@ public class MovieVideoFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            VideoAdapter adapter = new VideoAdapter(videoList.videos);
+                            VideoAdapter adapter = new VideoAdapter(videoList.videos, new VideoAdapter.OnVideoClickListener() {
+                                @Override
+                                public void onClick(Video video) {
+                                    Uri uri =  Uri.parse(video.getYoutubeVideoUrl());
+                                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                                    Log.i("Video", "Video Playing....");
+
+                                }
+                            });
                             videoRecyclerView.setAdapter(adapter);
 
                         }

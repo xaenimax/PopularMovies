@@ -38,4 +38,8 @@ public class Video {
     public String getYoutubeUrl() {
         return String.format("https://img.youtube.com/vi/%s/0.jpg", this.key);
     }
+
+    public String getYoutubeVideoUrl() {
+        return String.format("https://www.youtube.com/watch?v=%s", this.key);
+    }
 }
