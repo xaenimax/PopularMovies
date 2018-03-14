@@ -1,5 +1,6 @@
 package com.aenima.android.popularmovies;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
+import com.aenima.android.popularmovies.core.database.MovieDbHelper;
 import com.aenima.android.popularmovies.fragment.MovieDetailFragment;
 import com.aenima.android.popularmovies.fragment.MovieReviewFragment;
 import com.aenima.android.popularmovies.core.model.Movie;
@@ -30,7 +32,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailActivity extends AppCompatActivity{
-
+    private SQLiteDatabase mSqLiteDatabase;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -61,7 +63,11 @@ public class DetailActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        MovieDbHelper movieDbHelper = new MovieDbHelper(this);
+        mSqLiteDatabase = movieDbHelper.getWritableDatabase();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -79,6 +85,7 @@ public class DetailActivity extends AppCompatActivity{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
