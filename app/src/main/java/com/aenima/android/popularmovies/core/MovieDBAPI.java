@@ -30,6 +30,7 @@ public class MovieDBAPI {
 
     public static String MOVIE_DB_API_POPULAR_PARTIAL_URL = "popular";
     public static String MOVIE_DB_API_TOP_RATED_PARTIAL_URL = "top_rated";
+    public static final String FAVOURITE_KEY = "favourite_key";
 
 
     public static URL getMovieListUrl(String sortBy){

@@ -1,5 +1,6 @@
 package com.aenima.android.popularmovies.core.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -53,9 +54,29 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean addFavouriteMovie(Movie movie){
+    public long addFavouriteMovie(Movie movie, SQLiteDatabase sqLiteDatabase){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_TITLE, movie.getTitle());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_VOTE_COUNT, movie.getVoteCount());
+        contentValues.put(MovieContract.MovieEntry._ID, movie.getId());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_HAS_VIDEO, movie.hasVideo()? 1 : 0);
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_VOTE_AVG, movie.getVoteAvg());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_POPULARITY, movie.getPopularity());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_POSTER_PATH, movie.getPosterPath());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_LANGUAGE, movie.getOriginalTitle());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_TITLE, movie.getTitle());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_BACKDROP_PATH, movie.getBackDropPath());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_IS_ADULT, movie.isAdult() ? 1 : 0);
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_OVERVIEW, movie.getOverview());
+        contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_RELEASE_DATE, movie.getReleaseDate());
+        return sqLiteDatabase.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+    }
 
-        return true;
+    public void removeFavouriteMovie(Movie movie, SQLiteDatabase sqLiteDatabase){
+        final String deleteQuery = "DELETE FROM " + MovieContract.MovieEntry.TABLE_NAME +
+                " WHERE " + MovieContract.MovieEntry._ID +
+                " = " + movie.getIdString();
+        sqLiteDatabase.execSQL(deleteQuery);
     }
 
     public List<Movie> getFavouriteMovie(SQLiteDatabase sqLiteDatabase){
@@ -71,19 +92,19 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         mCursor.moveToFirst();
         for(int i = 0; i < mCursor.getCount(); i++){
             mCursor.moveToPosition(i);
-            String movieTitle = mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_TITLE));
-            int movieVoteCount = mCursor.getInt(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_VOTE_COUNT));
-            long movieId = mCursor.getLong(mCursor.getColumnIndex(MovieContract.MovieEntry._ID));
-            boolean movieHasVideo = mCursor.getInt(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_HAS_VIDEO)) == 1 ? true : false;
-            float movieVoteAvg = mCursor.getFloat(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_VOTE_AVG));
-            float moviePopularity = mCursor.getFloat(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_POPULARITY));
-            String moviePosterPath = mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_POSTER_PATH));
-            String movieOriginalLanguage = mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_LANGUAGE));
-            String movieOriginalTitle = mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_TITLE));
-            String movieBackdropPath = mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_BACKDROP_PATH));
-            boolean movieIsAdult = mCursor.getInt(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_IS_ADULT)) == 1 ? true : false;
-            String movieOverview =  mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_OVERVIEW));
-            String movieReleaseDate =  mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_RELEASE_DATE));
+            String movieTitle =             mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_TITLE));
+            int movieVoteCount =            mCursor.getInt(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_VOTE_COUNT));
+            long movieId =                  mCursor.getLong(mCursor.getColumnIndex(MovieContract.MovieEntry._ID));
+            boolean movieHasVideo =         mCursor.getInt(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_HAS_VIDEO)) == 1 ? true : false;
+            float movieVoteAvg =            mCursor.getFloat(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_VOTE_AVG));
+            float moviePopularity =         mCursor.getFloat(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_POPULARITY));
+            String moviePosterPath =        mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_POSTER_PATH));
+            String movieOriginalLanguage =  mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_LANGUAGE));
+            String movieOriginalTitle =     mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_TITLE));
+            String movieBackdropPath =      mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_BACKDROP_PATH));
+            boolean movieIsAdult =          mCursor.getInt(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_IS_ADULT)) == 1 ? true : false;
+            String movieOverview =          mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_OVERVIEW));
+            String movieReleaseDate =       mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.TABLE_COLUMN_RELEASE_DATE));
             Movie movie = new Movie(movieTitle, movieVoteCount, movieId, movieHasVideo, movieVoteAvg, moviePopularity, moviePosterPath, movieOriginalLanguage, movieOriginalTitle, movieBackdropPath, movieIsAdult, movieOverview, movieReleaseDate);
             favourites.add(movie);
         }

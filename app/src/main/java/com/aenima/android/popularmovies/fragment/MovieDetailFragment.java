@@ -81,7 +81,7 @@ public class MovieDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        releaseDateTextView.setText(getString(R.string.release_date_label) + " " + mMovie.getReleaseDate());
+        releaseDateTextView.setText(getString(R.string.release_date_label) + " " + mMovie.getFormattedReleaseDate());
         //setTitle(String.valueOf(selectedMovie.getTitle()));
 
         if (mMovie.getOriginalTitle() != null) {

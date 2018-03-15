@@ -211,7 +211,9 @@ public class Movie implements Parcelable{
     }
 
     public String getReleaseDate() {
-
+        return this.movieReleaseDate;
+    }
+    public String getFormattedReleaseDate(){
         SimpleDateFormat curFormater = new SimpleDateFormat("yyyy-MM-dd");
         curFormater.setTimeZone(TimeZone.getDefault());
         Date dateObj = null;
@@ -224,7 +226,7 @@ public class Movie implements Parcelable{
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return "";
+        return this.movieReleaseDate;
 
     }
 
@@ -234,5 +236,33 @@ public class Movie implements Parcelable{
 
     public String getIdString() {
         return String.valueOf(this.movieId);
+    }
+
+    public int getVoteCount() {
+        return this.movieVoteCount;
+    }
+
+    public long getId() {
+        return this.movieId;
+    }
+
+    public boolean hasVideo() {
+        return this.movieHasVideo;
+    }
+
+    public float getPopularity() {
+        return this.moviePopularity;
+    }
+
+    public String getPosterPath() {
+        return moviePosterPath;
+    }
+
+    public String getBackDropPath() {
+        return movieBackdropPath;
+    }
+
+    public boolean isAdult() {
+        return movieIsAdult;
     }
 }

@@ -39,7 +39,6 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {// implements LoaderManager.LoaderCallbacks<String>{
     //private static final int MOVIE_DB_LOADER_ID = 75;
-    private static final String FAVOURITE_KEY = "favourite_key";
     private SQLiteDatabase mSqLiteDatabase;
     MovieDbHelper movieDbHelper;
     private static final String RECYCLER_VIEW_STATE = "recycler_view_state";
@@ -84,8 +83,9 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
     private void loadSavedMovies() {
         this.showMovieList(movieDbHelper.getFavouriteMovie(mSqLiteDatabase));
     }
+
     private void loadMovies(){
-        if (selectedSortBy.equals(FAVOURITE_KEY)){
+        if (selectedSortBy.equals(MovieDBAPI.FAVOURITE_KEY)){
             loadSavedMovies();
         } else {
             Call<MovieList> callBack = MovieDBAPI.getMovies(selectedSortBy);
@@ -175,8 +175,8 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
             return true;
         }
         else if(id == R.id.action_favourite){
-            sharedPreferences.edit().putString(getString(R.string.preference_file_key), FAVOURITE_KEY).apply();
-            selectedSortBy = FAVOURITE_KEY;
+            sharedPreferences.edit().putString(getString(R.string.preference_file_key), MovieDBAPI.FAVOURITE_KEY).apply();
+            selectedSortBy = MovieDBAPI.FAVOURITE_KEY;
             loadSavedMovies();
 
             return true;
