@@ -3,6 +3,7 @@ package com.aenima.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
+import com.aenima.android.popularmovies.core.database.MovieDbHelper;
 import com.aenima.android.popularmovies.core.model.MovieList;
 import com.aenima.android.popularmovies.core.model.ReviewList;
 import com.aenima.android.popularmovies.core.network.NetworkUtils;
@@ -37,7 +39,9 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {// implements LoaderManager.LoaderCallbacks<String>{
     //private static final int MOVIE_DB_LOADER_ID = 75;
-    private static final String SORT_BY_EXTRA = "sort_by_extra";
+//    private static final String SORT_BY_EXTRA = "sort_by_extra";
+    private SQLiteDatabase mSqLiteDatabase;
+    MovieDbHelper movieDbHelper;
     private static final String RECYCLER_VIEW_STATE = "recycler_view_state";
     private Parcelable mRecyclerViewState = null;
 
@@ -64,6 +68,10 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        movieDbHelper = new MovieDbHelper(this);
+        mSqLiteDatabase = movieDbHelper.getWritableDatabase();
+
+
         gridLayoutManager = new StaggeredGridLayoutManager(columnNumber, 1);
         //gridLayoutManager.onRestoreInstanceState(state);
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
@@ -73,13 +81,18 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
 
     }
 
+    private void loadSavedMovies() {
+        this.showMovieList(movieDbHelper.getFavouriteMovie(mSqLiteDatabase));
+    }
     private void loadMovies(){
         Call<MovieList> callBack = MovieDBAPI.getMovies(selectedSortBy);
         callBack.enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(Call<MovieList> call, Response<MovieList> response) {
                 MovieList results = response.body();
-                showMovieList(results);
+                if(results != null) {
+                    showMovieList(results.movieList);
+                }
             }
 
             @Override
@@ -114,8 +127,6 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mRecyclerViewState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE);
-
-
     }
 
     @Override
@@ -159,19 +170,25 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
             }
             return true;
         }
+        else if(id == R.id.action_favourite){
+            sharedPreferences.edit().putString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_TOP_RATED_PARTIAL_URL).apply();
+            loadSavedMovies();
 
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void showErrorMessage() {
         Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG).show();
     }
 
-    private void showMovieList(final MovieList results) {
+    private void showMovieList(final List<Movie> movieList) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                List<Movie> movieList = results.movieList;
                 if(movieAdapter == null) {
                     movieAdapter = new MovieAdapter(movieList, new MovieAdapter.OnMovieClickListener() {
                         @Override

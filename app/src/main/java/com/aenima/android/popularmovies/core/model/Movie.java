@@ -88,7 +88,7 @@ public class Movie implements Parcelable{
         }
     };
 
-    private Movie(String movieTitle, int movieVoteCount, long movieId, boolean movieHasVideo, float movieVoteAvg, float moviePopularity, String moviePosterPath, String movieOriginalLanguage, String movieOriginalTitle, String movieBackdropPath, boolean movieIsAdult, String movieOverview, String movieReleaseDate) {
+    public Movie(String movieTitle, int movieVoteCount, long movieId, boolean movieHasVideo, float movieVoteAvg, float moviePopularity, String moviePosterPath, String movieOriginalLanguage, String movieOriginalTitle, String movieBackdropPath, boolean movieIsAdult, String movieOverview, String movieReleaseDate) {
         this.movieTitle = movieTitle;
         this.moviePosterPath = moviePosterPath;
         this.movieOriginalLanguage = movieOriginalLanguage;
