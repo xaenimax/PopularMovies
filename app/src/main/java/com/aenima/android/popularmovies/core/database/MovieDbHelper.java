@@ -29,8 +29,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         final String CREATE_TABLE_SQL_STATEMENT = "CREATE TABLE "+
                         MovieContract.MovieEntry.TABLE_NAME + " ( " +
                         MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        MovieContract.MovieEntry.TABLE_COLUMN_TITLE + " VARCHAR, " +
-                        MovieContract.MovieEntry.TABLE_COLUMN_POSTER_PATH + " VARCHAR, " +
+                        MovieContract.MovieEntry.TABLE_COLUMN_TITLE + " VARCHAR NOT NULL, " +
+                        MovieContract.MovieEntry.TABLE_COLUMN_POSTER_PATH + " VARCHAR NOT NULL, " +
                         MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_TITLE + " VARCHAR, " +
                         MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_LANGUAGE + " VARCHAR, " +
                         MovieContract.MovieEntry.TABLE_COLUMN_BACKDROP_PATH + " VARCHAR, " +

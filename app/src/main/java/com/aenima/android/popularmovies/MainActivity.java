@@ -39,7 +39,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {// implements LoaderManager.LoaderCallbacks<String>{
     //private static final int MOVIE_DB_LOADER_ID = 75;
-//    private static final String SORT_BY_EXTRA = "sort_by_extra";
+    private static final String FAVOURITE_KEY = "favourite_key";
     private SQLiteDatabase mSqLiteDatabase;
     MovieDbHelper movieDbHelper;
     private static final String RECYCLER_VIEW_STATE = "recycler_view_state";
@@ -85,27 +85,31 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
         this.showMovieList(movieDbHelper.getFavouriteMovie(mSqLiteDatabase));
     }
     private void loadMovies(){
-        Call<MovieList> callBack = MovieDBAPI.getMovies(selectedSortBy);
-        callBack.enqueue(new Callback<MovieList>() {
-            @Override
-            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
-                MovieList results = response.body();
-                if(results != null) {
-                    showMovieList(results.movieList);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieList> call, Throwable t) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showErrorMessage();
-
+        if (selectedSortBy.equals(FAVOURITE_KEY)){
+            loadSavedMovies();
+        } else {
+            Call<MovieList> callBack = MovieDBAPI.getMovies(selectedSortBy);
+            callBack.enqueue(new Callback<MovieList>() {
+                @Override
+                public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+                    MovieList results = response.body();
+                    if (results != null) {
+                        showMovieList(results.movieList);
                     }
-                });
-            }
-        });
+                }
+
+                @Override
+                public void onFailure(Call<MovieList> call, Throwable t) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showErrorMessage();
+
+                        }
+                    });
+                }
+            });
+        }
     }
 
     /*
@@ -171,7 +175,8 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
             return true;
         }
         else if(id == R.id.action_favourite){
-            sharedPreferences.edit().putString(getString(R.string.preference_file_key), MovieDBAPI.MOVIE_DB_API_TOP_RATED_PARTIAL_URL).apply();
+            sharedPreferences.edit().putString(getString(R.string.preference_file_key), FAVOURITE_KEY).apply();
+            selectedSortBy = FAVOURITE_KEY;
             loadSavedMovies();
 
             return true;
