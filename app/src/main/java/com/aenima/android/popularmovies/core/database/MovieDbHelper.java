@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.util.Log;
 
 import com.aenima.android.popularmovies.core.model.Movie;
 
@@ -19,10 +21,12 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "movies.db";
     private static final int DB_VERSION = 1;
+    Context context;
 
     public MovieDbHelper (Context context){
-        //TODO change swap cursor factory
+        //TODO change swap cursor factory?
         super(context, DB_NAME, null, DB_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -54,7 +58,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public long addFavouriteMovie(Movie movie, SQLiteDatabase sqLiteDatabase){
+    public void addFavouriteMovie(Movie movie){
         ContentValues contentValues = new ContentValues();
         contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_TITLE, movie.getTitle());
         contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_VOTE_COUNT, movie.getVoteCount());
@@ -69,7 +73,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_IS_ADULT, movie.isAdult() ? 1 : 0);
         contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_OVERVIEW, movie.getOverview());
         contentValues.put(MovieContract.MovieEntry.TABLE_COLUMN_RELEASE_DATE, movie.getReleaseDate());
-        return sqLiteDatabase.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+        Uri uri = this.context.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+        Log.d(this.getClass().getName(), "Result " + uri);
     }
 
     public void removeFavouriteMovie(Movie movie, SQLiteDatabase sqLiteDatabase){

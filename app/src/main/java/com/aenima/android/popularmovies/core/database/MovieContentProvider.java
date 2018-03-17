@@ -1,9 +1,13 @@
 package com.aenima.android.popularmovies.core.database;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +17,16 @@ import android.support.annotation.Nullable;
  */
 
 public class MovieContentProvider extends ContentProvider{
+    public static final int MOVIE = 100;
+    public static final int MOVIE_WITH_ID = 101;
+    public static UriMatcher sUriMatcher = buildUriMatcher();
+
+    public static UriMatcher buildUriMatcher(){
+        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        uriMatcher.addURI(MovieContract.AUTHORITY, MovieContract.PATH_MOVIE, MOVIE);
+        uriMatcher.addURI(MovieContract.AUTHORITY, MovieContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
+        return uriMatcher;
+    }
     private MovieDbHelper movieDbHelper;
     @Override
     public boolean onCreate() {
@@ -36,7 +50,25 @@ public class MovieContentProvider extends ContentProvider{
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        return null;
+        final SQLiteDatabase sqLiteDatabase = movieDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        Uri returnUri = null;
+        switch (match){
+            case MOVIE_WITH_ID:
+            case MOVIE:
+                long id = sqLiteDatabase.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+                if (id > 0){
+                    returnUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+                }else {
+                    throw new SQLiteException("Error inserting new row into " + uri);
+                }
+                break;
+            default:
+                throw  new UnsupportedOperationException("Unknown operation: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnUri;
     }
 
     @Override
@@ -46,6 +78,7 @@ public class MovieContentProvider extends ContentProvider{
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
+
         return 0;
     }
 }
