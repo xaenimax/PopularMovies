@@ -79,6 +79,17 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(deleteQuery);
     }
 
+    public boolean isMovieFavourite(String movieId, SQLiteDatabase sqLiteDatabase){
+        Cursor mCursor = sqLiteDatabase.query(MovieContract.MovieEntry.TABLE_NAME,
+                null,
+                MovieContract.MovieEntry._ID + " = " + movieId,
+                null,
+                null,
+                null,
+                null);
+        return mCursor.getCount() > 0;
+    }
+
     public List<Movie> getFavouriteMovie(SQLiteDatabase sqLiteDatabase){
         List<Movie> favourites = new ArrayList<>();
         Cursor mCursor = sqLiteDatabase.query(MovieContract.MovieEntry.TABLE_NAME,

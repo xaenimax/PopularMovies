@@ -78,6 +78,7 @@ public class DetailActivity extends AppCompatActivity{
         // Give the TabLayout the ViewPager
         mTabLayout.setupWithViewPager(mViewPager);
 
+        fab.setImageResource(android.R.drawable.btn_star_big_on);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
