@@ -78,29 +78,30 @@ public class DetailActivity extends AppCompatActivity{
         }
         // Give the TabLayout the ViewPager
         mTabLayout.setupWithViewPager(mViewPager);
-        if(movieDbHelper.isMovieFavourite(selectedMovie.getIdString())){
+        if(movieDbHelper.isMovieFavourite(selectedMovie.getIdString())) {
             fab.setImageResource(android.R.drawable.btn_star_big_on);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        } else {
+            fab.setImageResource(android.R.drawable.btn_star_big_off);
+        }
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (movieDbHelper.isMovieFavourite(selectedMovie.getIdString())) {
+
                     fab.setImageResource(android.R.drawable.btn_star_big_off);
                     movieDbHelper.removeFavouriteMovie(selectedMovie);
                     Snackbar.make(view, getString(R.string.removed_from_favourites), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                }
-            });
-        } else {
-            fab.setImageResource(android.R.drawable.btn_star_big_off);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                } else {
+
                     fab.setImageResource(android.R.drawable.btn_star_big_on);
                     movieDbHelper.addFavouriteMovie(selectedMovie);
                     Snackbar.make(view, getString(R.string.added_to_favourites), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
-            });
-        }
+
+        });
+
     }
     private void showErrorMessage() {
         Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG).show();
