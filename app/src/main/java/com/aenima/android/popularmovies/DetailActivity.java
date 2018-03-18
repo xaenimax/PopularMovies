@@ -99,6 +99,7 @@ public class DetailActivity extends AppCompatActivity{
                     Snackbar.make(view, getString(R.string.added_to_favourites), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
+            }
 
         });
 
