@@ -1,5 +1,6 @@
 package com.aenima.android.popularmovies.core.database;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -37,8 +38,35 @@ public class MovieContentProvider extends ContentProvider{
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        return null;
+    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String selection, @Nullable String[] strings1, @Nullable String s1) {
+        final SQLiteDatabase sqLiteDatabase = movieDbHelper.getReadableDatabase();
+        int match = sUriMatcher.match(uri);
+        Cursor returnCursor = null;
+        switch (match) {
+            case MOVIE_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                String selectionString = MovieContract.MovieEntry._ID + "=?";
+                String[] selecionArgs = new String[]{id};
+                returnCursor = sqLiteDatabase.query(MovieContract.MovieEntry.TABLE_NAME,
+                        null, selectionString, selecionArgs,
+                        null,
+                        null,
+                        s1);
+                break;
+            case MOVIE:
+                returnCursor = sqLiteDatabase.query(MovieContract.MovieEntry.TABLE_NAME,
+                        strings,
+                        selection,
+                        strings1,
+                        null,
+                        null,
+                        s1);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown operation: " + uri);
+        }
+        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return returnCursor;
     }
 
     @Nullable
@@ -65,7 +93,7 @@ public class MovieContentProvider extends ContentProvider{
                 }
                 break;
             default:
-                throw  new UnsupportedOperationException("Unknown operation: " + uri);
+                throw new UnsupportedOperationException("Unknown operation: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
@@ -73,12 +101,34 @@ public class MovieContentProvider extends ContentProvider{
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+        final SQLiteDatabase sqLiteDatabase = movieDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        int deletedId = 0;
+        switch (match) {
+            case MOVIE_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                String selectionString = MovieContract.MovieEntry._ID + "=?";
+                String[] selecionArgs = new String[]{id};
+                deletedId = sqLiteDatabase.delete(MovieContract.MovieEntry.TABLE_NAME,
+                        selectionString, selecionArgs);
+                break;
+            case MOVIE:
+                deletedId = sqLiteDatabase.delete(MovieContract.MovieEntry.TABLE_NAME,
+                        s,
+                        strings);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown operation: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+
         return 0;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-
+        //there is no update operation permitted
         return 0;
     }
 }

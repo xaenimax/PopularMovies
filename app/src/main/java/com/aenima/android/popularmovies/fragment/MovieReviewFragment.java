@@ -2,6 +2,7 @@ package com.aenima.android.popularmovies.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,10 +25,16 @@ import butterknife.Unbinder;
  * create an instance of this fragment.
  */
 public class MovieReviewFragment extends Fragment {
+    private static final String RECYCLER_VIEW_STATE_KEY = "recycler_view_state_key";
+
+    static ReviewList mReviewList = null;
+
     @BindView(R.id.review_list_rv)
     RecyclerView reviewListRecyclerView;
 
     private Unbinder bind;
+    private Parcelable recyclerViewState;
+    LinearLayoutManager linearLayoutManager;
 
     public MovieReviewFragment() {
         // Required empty public constructor
@@ -39,15 +46,19 @@ public class MovieReviewFragment extends Fragment {
         return fragment;
     }
 
-    public void setReviewList(final ReviewList reviewList) {
-        if (reviewList != null) {
+    public void setReviewList(ReviewList reviewList) {
+        mReviewList = reviewList;
+        if (mReviewList != null) {
 
             getActivity().runOnUiThread(
                     new Runnable() {
                         @Override
                         public void run() {
-                            ReviewAdapter adapter = new ReviewAdapter(reviewList.reviews);
+                            ReviewAdapter adapter = new ReviewAdapter(mReviewList.reviews);
                             reviewListRecyclerView.setAdapter(adapter);
+                            if(recyclerViewState != null) {
+                                linearLayoutManager.onRestoreInstanceState(recyclerViewState);
+                            }
 
                         }
                     }
@@ -64,7 +75,9 @@ public class MovieReviewFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        reviewListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        linearLayoutManager = new LinearLayoutManager(this.getActivity());
+        reviewListRecyclerView.setLayoutManager(linearLayoutManager);
+
     }
 
     @Override
@@ -76,6 +89,22 @@ public class MovieReviewFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        recyclerViewState = linearLayoutManager.onSaveInstanceState();
+        outState.putParcelable(RECYCLER_VIEW_STATE_KEY, recyclerViewState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null) {
+            recyclerViewState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE_KEY);
+            setReviewList(mReviewList);
+        }
+
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -85,7 +114,8 @@ public class MovieReviewFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        bind.unbind();
+        if(bind != null)
+            bind.unbind();
     }
 
 }

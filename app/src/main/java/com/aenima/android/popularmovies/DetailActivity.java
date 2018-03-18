@@ -32,6 +32,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailActivity extends AppCompatActivity{
+    MovieDbHelper movieDbHelper = new MovieDbHelper(this);
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -77,17 +78,29 @@ public class DetailActivity extends AppCompatActivity{
         }
         // Give the TabLayout the ViewPager
         mTabLayout.setupWithViewPager(mViewPager);
-
-        fab.setImageResource(android.R.drawable.btn_star_big_on);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
+        if(movieDbHelper.isMovieFavourite(selectedMovie.getIdString())){
+            fab.setImageResource(android.R.drawable.btn_star_big_on);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fab.setImageResource(android.R.drawable.btn_star_big_off);
+                    movieDbHelper.removeFavouriteMovie(selectedMovie);
+                    Snackbar.make(view, getString(R.string.removed_from_favourites), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+        } else {
+            fab.setImageResource(android.R.drawable.btn_star_big_off);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fab.setImageResource(android.R.drawable.btn_star_big_on);
+                    movieDbHelper.addFavouriteMovie(selectedMovie);
+                    Snackbar.make(view, getString(R.string.added_to_favourites), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+        }
     }
     private void showErrorMessage() {
         Toast.makeText(this, R.string.no_connection_error, Toast.LENGTH_LONG).show();

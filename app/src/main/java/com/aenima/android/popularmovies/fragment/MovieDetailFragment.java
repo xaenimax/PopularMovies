@@ -119,7 +119,8 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        bind.unbind();
+        if(bind != null)
+            bind.unbind();
     }
 
 }

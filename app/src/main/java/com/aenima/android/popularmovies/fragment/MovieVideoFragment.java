@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,12 +23,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.aenima.android.popularmovies.fragment.MovieReviewFragment.mReviewList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MovieVideoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class MovieVideoFragment extends Fragment {
+
+    private static final String RECYCLER_VIEW_STATE_KEY = "recycler_view_state_key";
+    static VideoList mVideoList;
+    private Parcelable recyclerViewState;
+    private LinearLayoutManager linearLayoutManager;
 
     @BindView(R.id.video_list_rv)
     RecyclerView videoRecyclerView;
@@ -65,7 +73,8 @@ public class MovieVideoFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        videoRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(this.getActivity());
+        videoRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
     @Override
@@ -80,14 +89,31 @@ public class MovieVideoFragment extends Fragment {
         bind.unbind();
     }
 
-    public void setVideoList(final VideoList videoList) {
-        if (videoList != null) {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        recyclerViewState = linearLayoutManager.onSaveInstanceState();
+        outState.putParcelable(RECYCLER_VIEW_STATE_KEY, recyclerViewState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null) {
+            recyclerViewState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE_KEY);
+            setVideoList(mVideoList);
+        }
+
+    }
+    public void setVideoList(VideoList videoList) {
+        mVideoList = videoList;
+        if (mVideoList != null) {
 
             getActivity().runOnUiThread(
                     new Runnable() {
                         @Override
                         public void run() {
-                            VideoAdapter adapter = new VideoAdapter(videoList.videos, new VideoAdapter.OnVideoClickListener() {
+                            VideoAdapter adapter = new VideoAdapter(mVideoList.videos, new VideoAdapter.OnVideoClickListener() {
                                 @Override
                                 public void onClick(Video video) {
                                     Uri uri =  Uri.parse(video.getYoutubeVideoUrl());

@@ -20,7 +20,7 @@ import java.util.List;
 public class MovieDbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "movies.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 4;
     Context context;
 
     public MovieDbHelper (Context context){
@@ -33,7 +33,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String CREATE_TABLE_SQL_STATEMENT = "CREATE TABLE "+
                         MovieContract.MovieEntry.TABLE_NAME + " ( " +
-                        MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY, " +
                         MovieContract.MovieEntry.TABLE_COLUMN_TITLE + " VARCHAR NOT NULL, " +
                         MovieContract.MovieEntry.TABLE_COLUMN_POSTER_PATH + " VARCHAR NOT NULL, " +
                         MovieContract.MovieEntry.TABLE_COLUMN_ORIGINAL_TITLE + " VARCHAR, " +
@@ -45,10 +45,11 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                         MovieContract.MovieEntry.TABLE_COLUMN_HAS_VIDEO + " INTEGER, " +
                         MovieContract.MovieEntry.TABLE_COLUMN_IS_ADULT + " INTEGER, " +
                         MovieContract.MovieEntry.TABLE_COLUMN_VOTE_AVG + " FLOAT, " +
-                        MovieContract.MovieEntry.TABLE_COLUMN_POPULARITY + "FLOAT, "+
+                        MovieContract.MovieEntry.TABLE_COLUMN_POPULARITY + " FLOAT, "+
                         MovieContract.MovieEntry.TABLE_COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP "+
 
                 " ) ;";
+        Log.d(this.getClass().getName(), CREATE_TABLE_SQL_STATEMENT);
         sqLiteDatabase.execSQL(CREATE_TABLE_SQL_STATEMENT);
     }
 
@@ -77,21 +78,21 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         Log.d(this.getClass().getName(), "Result " + uri);
     }
 
-    public void removeFavouriteMovie(Movie movie, SQLiteDatabase sqLiteDatabase){
-        final String deleteQuery = "DELETE FROM " + MovieContract.MovieEntry.TABLE_NAME +
-                " WHERE " + MovieContract.MovieEntry._ID +
-                " = " + movie.getIdString();
-        sqLiteDatabase.execSQL(deleteQuery);
+    public void removeFavouriteMovie(Movie movie){
+        int result = this.context.getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry._ID +" = ?",
+                new String[]{movie.getIdString()}
+                );
+
     }
 
-    public boolean isMovieFavourite(String movieId, SQLiteDatabase sqLiteDatabase){
-        Cursor mCursor = sqLiteDatabase.query(MovieContract.MovieEntry.TABLE_NAME,
+    public boolean isMovieFavourite(String movieId){
+        Cursor mCursor = this.context.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                 null,
-                MovieContract.MovieEntry._ID + " = " + movieId,
-                null,
-                null,
-                null,
+                MovieContract.MovieEntry._ID + " = ?",
+                new String[]{movieId},
                 null);
+
         return mCursor.getCount() > 0;
     }
 

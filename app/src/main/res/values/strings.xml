@@ -28,4 +28,6 @@
     <string name="video_tab_title">Videos</string>
     <string name="source_string">Source:</string>
     <string name="action_favourite">Favourites</string>
+    <string name="added_to_favourites">Added to favourites!</string>
+    <string name="removed_from_favourites">Removed from favourites</string>
 </resources>
