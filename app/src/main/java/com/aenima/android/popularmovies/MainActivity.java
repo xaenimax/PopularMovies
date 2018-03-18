@@ -3,6 +3,7 @@ package com.aenima.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
@@ -69,8 +70,10 @@ public class MainActivity extends AppCompatActivity {// implements LoaderManager
 
         movieDbHelper = new MovieDbHelper(this);
         mSqLiteDatabase = movieDbHelper.getWritableDatabase();
-
-
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            //Do some stuff
+            columnNumber = 3;
+        }
         gridLayoutManager = new StaggeredGridLayoutManager(columnNumber, 1);
         //gridLayoutManager.onRestoreInstanceState(state);
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);

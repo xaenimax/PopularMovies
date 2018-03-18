@@ -112,6 +112,7 @@ public class MovieContentProvider extends ContentProvider{
                 String[] selecionArgs = new String[]{id};
                 deletedId = sqLiteDatabase.delete(MovieContract.MovieEntry.TABLE_NAME,
                         selectionString, selecionArgs);
+
                 break;
             case MOVIE:
                 deletedId = sqLiteDatabase.delete(MovieContract.MovieEntry.TABLE_NAME,
@@ -121,9 +122,12 @@ public class MovieContentProvider extends ContentProvider{
             default:
                 throw new UnsupportedOperationException("Unknown operation: " + uri);
         }
+        if(deletedId <= 0){
+            throw new SQLiteException("Error deleteting row " + uri);
+        }
         getContext().getContentResolver().notifyChange(uri, null);
 
-        return 0;
+        return deletedId;
     }
 
     @Override
