@@ -30,4 +30,7 @@
     <string name="action_favourite">Favourites</string>
     <string name="added_to_favourites">Added to favourites!</string>
     <string name="removed_from_favourites">Removed from favourites</string>
+    <string name="action_share">Share the trailer!</string>
+    <string name="share_action_title">Share the video..</string>
+    <string name="share_action_message">Watch %s trailer</string>
 </resources>

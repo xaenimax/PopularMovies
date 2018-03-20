@@ -1,9 +1,10 @@
 package com.aenima.android.popularmovies;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -13,11 +14,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.aenima.android.popularmovies.core.MovieDBAPI;
 import com.aenima.android.popularmovies.core.database.MovieDbHelper;
+import com.aenima.android.popularmovies.core.model.Video;
 import com.aenima.android.popularmovies.fragment.MovieDetailFragment;
 import com.aenima.android.popularmovies.fragment.MovieReviewFragment;
 import com.aenima.android.popularmovies.core.model.Movie;
@@ -30,6 +34,7 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class DetailActivity extends AppCompatActivity{
     MovieDbHelper movieDbHelper = new MovieDbHelper(this);
@@ -58,6 +63,61 @@ public class DetailActivity extends AppCompatActivity{
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_share) {
+
+            if(videoList == null) {
+                Call<VideoList> videoListCall = MovieDBAPI.getMovieVideos(selectedMovie.getIdString());
+                videoListCall.enqueue(new Callback<VideoList>() {
+                    @Override
+                    public void onResponse(Call<VideoList> call, Response<VideoList> response) {
+                        videoList = response.body();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                shareVideo();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<VideoList> call, Throwable t) {
+
+                    }
+                });
+            }
+            else {
+                shareVideo();
+            }
+        }
+        return true;
+    }
+
+    void shareVideo(){
+        if(videoList != null && videoList.videos.size() > 0){
+            String  mimeType = "video/mp4";
+            String title = getString(R.string.share_action_title);
+            String textToShare = String.format(getString(R.string.share_action_message), selectedMovie.getTitle());
+            ShareCompat.IntentBuilder.from(this)
+                    .setChooserTitle(title)
+                    .setStream(Uri.parse(videoList.videos.get(0).getYoutubeVideoUrl()))
+                    .setText(textToShare)
+                    .setType(mimeType).startChooser();
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,14 +153,12 @@ public class DetailActivity extends AppCompatActivity{
                     Snackbar.make(view, getString(R.string.removed_from_favourites), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 } else {
-
                     fab.setImageResource(android.R.drawable.btn_star_big_on);
                     movieDbHelper.addFavouriteMovie(selectedMovie);
                     Snackbar.make(view, getString(R.string.added_to_favourites), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
             }
-
         });
 
     }
@@ -173,7 +231,6 @@ public class DetailActivity extends AppCompatActivity{
                                         showErrorMessage();
                                     }
                                 });
-
                             }
                         });
                     }else {
